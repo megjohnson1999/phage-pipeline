@@ -3,12 +3,12 @@ rule fastp:
     input:
         r1 = "reads/{sample}_1.fastq.gz",
         r2 = "reads/{sample}_2.fastq.gz",
+    conda: "../envs/fastp_test.yaml"
     output:
         tr1 = "reads/{sample}_1_trimmed.fastq.gz",
         tr2 = "reads/{sample}_2_trimmed.fastq.gz",
     log:
         "logs/fastp/{sample}.log"
-    conda: "../envs/fastp_test.yaml"
     shell:
         "fastp -i {input.r1} -I {input.r2} -o {output.tr1} -O {output.tr2} &>> {log}"
 
@@ -17,14 +17,15 @@ rule get_db:
     conda: "../envs/kneaddata.yaml"
     output:
         "ref/db_done"
+    log:
+        "logs/get_db"
     shell:
         """
         mkdir -p ref
-        kneaddata_database --download human_genome bowtie2 ref
+        kneaddata_database --download human_genome bowtie2 ref &>> {log}
         touch ref/db_done
         """
     
-
 # Remove host contamination
 rule host_removal:
     input:
@@ -33,13 +34,13 @@ rule host_removal:
         db_done = "ref/db_done"
     params:
         db = config["host_database"]
+    threads: 8
+    conda: "../envs/bowtie2.yaml"
     output:
         hr1 = "reads/host_removed/{sample}_1_hr.fastq.gz",
         hr2 = "reads/host_removed/{sample}_2_hr.fastq.gz",
     log:
         "logs/host_removal/{sample}.log"
-    threads: config.get("num_threads", 8)
-    conda: "../envs/bowtie2.yaml"
     shell:
         """
         bowtie2 -p {threads} -x {params.db} -1 {input.tr1} -2 {input.tr2} \
