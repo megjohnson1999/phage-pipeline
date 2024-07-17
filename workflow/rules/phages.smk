@@ -22,7 +22,7 @@ rule filter_unbinned:
         {input.contigs_filt} -o {output.final_contigs}
         # Otherwise, if no bins were determined for the sample...
         else
-        echo "No sequences were binned for sample {wildcards.sample}" &>> {log}
+        echo "No sequences were binned for sample {wildcards.sample}"
         # Filter sequences <4000bp from main contigs file
         cat {input.contigs_filt} | seqkit seq -m 4000 > {output.final_contigs}
 
