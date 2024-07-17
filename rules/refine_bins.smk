@@ -41,7 +41,7 @@ rule graphbin:
 
         python scripts/prepResult.py \
         --binned out/{wildcards.sample}/binning/dastool/{wildcards.sample}_DASTool_bins \
-        --output "out/{wildcards.sample}/binning/dastool/" 2>> {log}
+        --output "out/{wildcards.sample}/binning/dastool/" &>> {log}
 
         mkdir -p {output}
 
@@ -50,7 +50,7 @@ rule graphbin:
         --contigs {input.contigs_filt} \
         --paths out/{wildcards.sample}/assembly/contigs.paths \
         --binned out/{wildcards.sample}/binning/dastool/initial_contig_bins.csv \
-        --output {output}/{wildcards.sample} 2>> {log}
+        --output {output}/{wildcards.sample} &>> {log}
 
         # For samples without bins, create necessary outputs
         else
