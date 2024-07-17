@@ -71,10 +71,9 @@ rule maxbin:
         "logs/maxbin/{sample}.log"
     shell:
         """
-        set -e
         run_MaxBin.pl -thread {threads} -contig {input.contigs_filt} \
         -reads {input.hr1} -reads2 {input.hr2} \
-        -out out/{wildcards.sample}/binning/maxbin.output 2>> {log}
+        -out out/{wildcards.sample}/binning/maxbin.output 2>> {log} || true
 
         mkdir -p {output}
         mv out/{wildcards.sample}/binning/maxbin.output* {output} 2>> {log}
