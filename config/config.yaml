@@ -1,2 +1,4 @@
+reads: "reads"
+outdir: "out"
+
 host_database: "ref/hg37dec_v0.1"
-num_threads: 8
