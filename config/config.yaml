@@ -1,4 +1,4 @@
-reads: "reads"
-outdir: "out"
+reads: directory("reads")
+outdir: directory("out")
 
 host_database: "ref/hg37dec_v0.1"

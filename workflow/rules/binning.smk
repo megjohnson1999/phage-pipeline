@@ -1,7 +1,7 @@
 rule binning_prep:
     input:
-        hr1 = "reads/host_removed/{sample}_1_hr.fastq.gz",
-        hr2 = "reads/host_removed/{sample}_2_hr.fastq.gz",
+        hr1 = os.path.join(config["reads"], "host_removed", "{sample}_1_hr.fastq.gz"),
+        hr2 = os.path.join(config["reads"], "host_removed", "{sample}_2_hr.fastq.gz"),
         contigs = "out/{sample}/assembly/contigs.fasta"
     threads: 8
     conda: "../envs/bowtie2.yaml"
@@ -18,7 +18,8 @@ rule binning_prep:
 
         bowtie2-build {output.contigs_filt} out/{wildcards.sample}/binning/map_reads/btdb &>> {log}
 
-        bowtie2 --no-unal -p {threads} -x out/{wildcards.sample}/binning/map_reads/btdb -1 {input.hr1} -2 {input.hr2} -S {output.sam} &>> {log}
+        bowtie2 --no-unal -p {threads} -x out/{wildcards.sample}/binning/map_reads/btdb \
+        -1 {input.hr1} -2 {input.hr2} -S {output.sam} &>> {log}
 
         samtools view -@ {threads} -Sb -o {output.bam} {output.sam} &>> {log}
 
@@ -60,8 +61,8 @@ rule concoct:
 
 rule maxbin:
     input:
-        hr1 = "reads/host_removed/{sample}_1_hr.fastq.gz",
-        hr2 = "reads/host_removed/{sample}_2_hr.fastq.gz",
+        hr1 = os.path.join(config["reads"], "host_removed", "{sample}_1_hr.fastq.gz"),
+        hr2 = os.path.join(config["reads"], "host_removed", "{sample}_2_hr.fastq.gz"),
         contigs_filt = "out/{sample}/assembly/contigs_filt_1000bp.fasta"
     threads: config.get("num_threads", 8)
     conda: "../envs/maxbin_env.yaml"

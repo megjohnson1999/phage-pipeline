@@ -1,7 +1,7 @@
 rule spades:
     input:
-        hr1 = "reads/host_removed/{sample}_1_hr.fastq.gz",
-        hr2 = "reads/host_removed/{sample}_2_hr.fastq.gz",
+        hr1 = os.path.join(config["reads"], "host_removed", "{sample}_1_hr.fastq.gz"),
+        hr2 = os.path.join(config["reads"], "host_removed", "{sample}_2_hr.fastq.gz"),
     threads: 8
     conda: "../envs/spades_env.yml"
     output:
