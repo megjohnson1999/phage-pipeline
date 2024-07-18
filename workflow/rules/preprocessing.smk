@@ -1,12 +1,12 @@
 # Trim adapters from raw reads
 rule fastp:
     input:
-        r1 = "reads/{sample}_1.fastq.gz",
-        r2 = "reads/{sample}_2.fastq.gz",
+        r1 = os.path.join(config["reads"],"{sample}_1.fastq.gz"),
+        r2 = os.path.join(config["reads"],"{sample}_2.fastq.gz"),
     conda: "../envs/fastp_test.yaml"
     output:
-        tr1 = "reads/{sample}_1_trimmed.fastq.gz",
-        tr2 = "reads/{sample}_2_trimmed.fastq.gz",
+        tr1 = os.path.join(config["reads"], "{sample}_1_trimmed.fastq.gz"),
+        tr2 = os.path.join(config["reads"], "{sample}_2_trimmed.fastq.gz"),
     log:
         "logs/fastp/{sample}.log"
     shell:
@@ -29,23 +29,24 @@ rule get_db:
 # Remove host contamination
 rule host_removal:
     input:
-        tr1 = "reads/{sample}_1_trimmed.fastq.gz",
-        tr2 = "reads/{sample}_2_trimmed.fastq.gz",
+        tr1 = os.path.join(config["reads"], "{sample}_1_trimmed.fastq.gz"),
+        tr2 = os.path.join(config["reads"], "{sample}_2_trimmed.fastq.gz"),
         db_done = "ref/db_done"
     params:
         db = config["host_database"]
     threads: 8
     conda: "../envs/bowtie2.yaml"
     output:
-        hr1 = "reads/host_removed/{sample}_1_hr.fastq.gz",
-        hr2 = "reads/host_removed/{sample}_2_hr.fastq.gz",
+        hr1 = os.path.join(config["reads"], "host_removed", "{sample}_1_hr.fastq.gz"),
+        hr2 = os.path.join(config["reads"], "host_removed", "{sample}_2_hr.fastq.gz"),
     log:
         "logs/host_removal/{sample}.log"
     shell:
         """
         bowtie2 -p {threads} -x {params.db} -1 {input.tr1} -2 {input.tr2} \
-        --very-sensitive-local --un-conc-gz reads/host_removed/{wildcards.sample} \
+        --very-sensitive-local \
+        --un-conc-gz os.path.join(config["reads"], "host_removed", "{wildcards.sample}") \
         &>> {log}
-        mv reads/host_removed/{wildcards.sample}.1 {output.hr1}
-        mv reads/host_removed/{wildcards.sample}.2 {output.hr2}
+        mv os.path.join(config["reads"], "host_removed", "{wildcards.sample}.1") {output.hr1}
+        mv os.path.join(config["reads"], "host_removed", "{wildcards.sample}.2") {output.hr2}
         """
