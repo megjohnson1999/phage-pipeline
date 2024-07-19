@@ -47,7 +47,7 @@ rule concoct:
     shell:
         """
         mkdir -p os.path.join(config["outdir"], "{wildcards.sample}", "binning", "concoct.out")
-        mkdir -p os.path.join(config["outdir"], "{wildcards.sample}", "binning", "concoct.out/results")
+        mkdir -p os.path.join(config["outdir"], "{wildcards.sample}", "binning", "concoct.out", "results")
 
         cut_up_fasta.py {input.contigs_filt} -c 10000 -o 0 --merge_last -b {output.bed} > {output.fa} &> {log}
 
@@ -112,16 +112,16 @@ rule metabat:
 rule tsv_files_for_dastool:
     input:
         concoct = os.path.join(config["outdir"], "{sample}", "binning", "concoct.out", "results", "clustering_merged.csv"),
-        maxbin = os.path.join(config["outdir"], "{sample}", "binning", "maxbin.out")
+        maxbin = os.path.join(config["outdir"], "{sample}", "binning", "maxbin.out"),
         metabat = os.path.join(config["outdir"], "{sample}", "binning", "metabat.out")
     conda: "../envs/dastool_test2.yaml"
-    output: os.path.join(config["outdir], "{sample}", "binning", "dastool", "concoct.contigs2bin.tsv")
-        concoct_tsv = os.path.join(config["outdir], "{sample}", "binning", "dastool", "concoct.contigs2bin.tsv")
-        maxbin_tsv = os.path.join(config["outdir], "{sample}", "binning", "dastool", "maxbin.contigs2bin.tsv")
-        metabat_tsv = os.path.join(config["outdir], "{sample}", "binning", "dastool", "metabat.contigs2bin.tsv")
+    output:
+        concoct_tsv = os.path.join(config["outdir"], "{sample}", "binning", "dastool", "concoct.contigs2bin.tsv"),
+        maxbin_tsv = os.path.join(config["outdir"], "{sample}", "binning", "dastool", "maxbin.contigs2bin.tsv"),
+        metabat_tsv = os.path.join(config["outdir"], "{sample}", "binning", "dastool", "metabat.contigs2bin.tsv")
     shell:
         """
-        mkdir -p os.path.join(config["outdir], "{wildcards.sample}", "binning", "dastool")
+        mkdir -p os.path.join(config["outdir"], "{wildcards.sample}", "binning", "dastool")
 
         # Convert concoct csv to tsv
         perl -pe 's/,/\tCONCOCT.bin./g' {input.concoct} > {output.concoct_tsv}

@@ -65,7 +65,7 @@ rule checkm:
     threads: config.get("num_threads", 8)
     conda: "envs/checkm_env.yaml"
     output:
-        directory(os.path.join(config["outdir"], "{sample}", "binning", "checkm")
+        directory(os.path.join(config["outdir"], "{sample}", "binning", "checkm"))
     log:
         "logs/checkm/{sample}.log"
     shell:
