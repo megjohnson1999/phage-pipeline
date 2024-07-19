@@ -10,7 +10,7 @@ rule fastp:
     log:
         "logs/fastp/{sample}.log"
     shell:
-        "fastp -i {input.r1} -I {input.r2} -o {output.tr1} -O {output.tr2} &>> {log}"
+        "fastp -i {input.r1} -I {input.r2} -o {output.tr1} -O {output.tr2} &> {log}"
 
 # Get database for host removal step
 rule get_db:
@@ -22,7 +22,7 @@ rule get_db:
     shell:
         """
         mkdir -p ref
-        kneaddata_database --download human_genome bowtie2 ref &>> {log}
+        kneaddata_database --download human_genome bowtie2 ref &> {log}
         touch ref/db_done
         """
     
@@ -43,10 +43,11 @@ rule host_removal:
         "logs/host_removal/{sample}.log"
     shell:
         """
+        mkdir -p {config[reads]}/host_removed
         bowtie2 -p {threads} -x {params.db} -1 {input.tr1} -2 {input.tr2} \
         --very-sensitive-local \
-        --un-conc-gz os.path.join(config["reads"], "host_removed", "{wildcards.sample}") \
-        &>> {log}
-        mv os.path.join(config["reads"], "host_removed", "{wildcards.sample}.1") {output.hr1}
-        mv os.path.join(config["reads"], "host_removed", "{wildcards.sample}.2") {output.hr2}
+        --un-conc-gz {config[reads]}/host_removed/{wildcards.sample} \
+        &> {log}
+        mv {config[reads]}/host_removed/{wildcards.sample}.1 {output.hr1}
+        mv {config[reads]}/host_removed/{wildcards.sample}.2 {output.hr2}
         """
