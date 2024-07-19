@@ -12,13 +12,13 @@ rule filter_unbinned:
         if [ -s {input.graphbin}/{wildcards.sample}graphbin_unbinned.csv ]; then
         # Get fasta file of unbinned sequences
         seqkit grep -f {input.graphbin}/{wildcards.sample}graphbin_unbinned.csv \
-        {input.contigs_filt} -o os.path.join(config["outdir"], "{wildcards.sample}", "binning", "unbinned_contigs.fasta")
+        {input.contigs_filt} -o {config[outdir]}/{wildcards.sample}/binning/unbinned_contigs.fasta
         # Extract the IDs of the unbinned sequences <4000bp
-        cat os.path.join(config["outdir"], "{wildcards.sample}", "binning", "unbinned_contigs.fasta") \
+        cat {config[outdir]}/{wildcards.sample}/binning/unbinned_contigs.fasta \
         | seqkit seq -n -M 4000 \
-        > os.path.join(config["outdir"], "{wildcards.sample}", "binning", "filt_4000_seqs_to_discard.txt")
+        > {config[outdir]}/{wildcards.sample}/binning/filt_4000_seqs_to_discard.txt
         # From main contigs file, get all sequences except for those on this list
-        seqkit grep -v -f os.path.join(config["outdir"], "{wildcards.sample}", "binning", "filt_4000_seqs_to_discard.txt") \
+        seqkit grep -v -f {config[outdir]}/{wildcards.sample}/binning/filt_4000_seqs_to_discard.txt \
         {input.contigs_filt} -o {output.final_contigs}
         # Otherwise, if no bins were determined for the sample...
         else
@@ -35,10 +35,8 @@ rule filter_unbinned:
 rule genomad_db:
     output: directory("ref/genomad_db")
     conda: "../envs/genomad_env.yaml"
-    log:
-        "logs/genomad_db"
     shell:
-        "genomad download-database ref &>> {log}"
+        "genomad download-database ref"
 
 rule genomad:
     input:

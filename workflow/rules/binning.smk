@@ -17,18 +17,17 @@ rule binning_prep:
         cat {input.contigs} | seqkit seq -m 1000 > {output.contigs_filt}
 
         bowtie2-build {output.contigs_filt} \
-        os.path.join(config["outdir"], "{wildcards.sample}", "binning", "map_reads", "btdb") \
-        &> {log}
+        {config[outdir]}/{wildcards.sample}/binning/map_reads/btdb &> {log}
 
         bowtie2 --no-unal -p {threads} 
-        os.path.join(config["outdir"], "{wildcards.sample}", "binning", "map_reads", "btdb") \
-        -1 {input.hr1} -2 {input.hr2} -S {output.sam} &> {log}
+        {config[outdir]}/{wildcards.sample}/binning/map_reads/btdb \
+        -1 {input.hr1} -2 {input.hr2} -S {output.sam} &>> {log}
 
-        samtools view -@ {threads} -Sb -o {output.bam} {output.sam} &> {log}
+        samtools view -@ {threads} -Sb -o {output.bam} {output.sam} &>> {log}
 
-        samtools sort -O bam -o {output.sorted_bam} {output.bam} &> {log}
+        samtools sort -O bam -o {output.sorted_bam} {output.bam} &>> {log}
 
-        samtools index {output.sorted_bam} &> {log}
+        samtools index {output.sorted_bam} &>> {log}
         """
 
 rule concoct:
@@ -46,26 +45,26 @@ rule concoct:
         "logs/concoct/{sample}.log"
     shell:
         """
-        mkdir -p os.path.join(config["outdir"], "{wildcards.sample}", "binning", "concoct.out")
-        mkdir -p os.path.join(config["outdir"], "{wildcards.sample}", "binning", "concoct.out", "results")
+        mkdir -p {config[outdir]}/{wildcards.sample}/binning/concoct.out
+        mkdir -p {config[outdir]}/{wildcards.sample}/binning/concoct.out/results
 
         cut_up_fasta.py {input.contigs_filt} -c 10000 -o 0 --merge_last -b {output.bed} > {output.fa} &> {log}
 
         concoct_coverage_table.py \
-        os.path.join(config["outdir"], "{wildcards.sample}", "binning", "concoct.out", "contigs_10k.bed") \
-        {input.sorted_bam} > {output.cov_table} &> {log}
+        {config[outdir]}/{wildcards.sample}/binning/concoct.out/contigs_10k.bed" \
+        {input.sorted_bam} > {output.cov_table}
 
-        concoct --composition_file os.path.join(config["outdir"], "{wildcards.sample}", "binning", "concoct.out", "contigs_10k.fasta") \
+        concoct --composition_file {config[outdir]}/{wildcards.sample}/binning/concoct.out/contigs_10k.fasta \
         --coverage_file {output.cov_table} \
-        -b os.path.join(config["outdir"], "{wildcards.sample}", "binning", "concoct.out", "results") &> {log}
+        -b {config[outdir]}/{wildcards.sample}/binning/concoct.out/results &>> {log}
 
         merge_cutup_clustering.py \
-        os.path.join(config["outdir"], "{wildcards.sample}", "binning", "concoct.out", "results", "clustering_gt1000.csv") \
-        > {output.merged_csv} &> {log}
+        {config[outdir]}/{wildcards.sample}/binning/concoct.out/results/clustering_gt1000.csv \
+        > {output.merged_csv} &>> {log}
 
-        mkdir -p os.path.join(config["outdir"], "{wildcards.sample}", "binning", "concoct.out", "results", "fasta_bins")
+        mkdir -p {config[outdir]}/{wildcards.sample}/binning/concoct.out/results/fasta_bins
         extract_fasta_bins.py {input.contigs_filt} {output.merged_csv} \
-        --output_path os.path.join(config["outdir"], "{wildcards.sample}", "binning", "concoct.out", "results", "fasta_bins") &> {log}
+        --output_path {config[outdir]}/{wildcards.sample}/binning/concoct.out/results/fasta_bins &>> {log}
         """
 
 rule maxbin:
@@ -83,10 +82,10 @@ rule maxbin:
         """
         run_MaxBin.pl -thread {threads} -contig {input.contigs_filt} \
         -reads {input.hr1} -reads2 {input.hr2} \
-        -out os.path.join(config["out"], "{wildcards.sample}", "binning", "maxbin.output") &> {log} || true
+        {config[outdir]}/{wildcards.sample}/binning/maxbin.output &> {log} || true
 
         mkdir -p {output}
-        mv os.path.join(config["out"], "{wildcards.sample}", "binning", "maxbin.output*") {output} &> {log}
+        mv {config[outdir]}/{wildcards.sample}/binning/maxbin.output* {output}
         """
 
 rule metabat:
@@ -104,8 +103,7 @@ rule metabat:
         """
         jgi_summarize_bam_contig_depths --outputDepth {output.depth} {input.sorted_bam}
         mkdir -p {output.outfile}
-        #cd {output.outfile}
-        #runMetaBat.sh ../../../{input.contigs_filt} ../../../{input.sorted_bam} &> {log}
+        
         metabat2 -i {input.contigs_filt} -a {output.depth} -o {output.outfile}/bin -v &> {log}
         """
 
@@ -121,7 +119,7 @@ rule tsv_files_for_dastool:
         metabat_tsv = os.path.join(config["outdir"], "{sample}", "binning", "dastool", "metabat.contigs2bin.tsv")
     shell:
         """
-        mkdir -p os.path.join(config["outdir"], "{wildcards.sample}", "binning", "dastool")
+        mkdir -p {config[outdir]}/{wildcards.sample}/binning/dastool
 
         # Convert concoct csv to tsv
         perl -pe 's/,/\tCONCOCT.bin./g' {input.concoct} > {output.concoct_tsv}
