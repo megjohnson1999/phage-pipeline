@@ -17,7 +17,7 @@ rule dastool:
         DAS_Tool --threads {threads} --write_bins --write_unbinned \
         -i {input.concoct_tsv},{input.maxbin_tsv},{input.metabat_tsv} \
         -l concoct,maxbin,metabat -c {input.contigs_filt} \
-        -o os.path.join(config["outdir"], "{wildcards.sample}", "binning", "dastool", "{wildcards.sample}") \
+        -o {config[outdir]}/{wildcards.sample}/binning/dastool/{wildcards.sample} \
         &> {log} || true
         
         """
@@ -35,22 +35,22 @@ rule graphbin:
     shell:
         """
         # For samples with bins, format bins and run graphBin
-        if [ -s os.path.join(config["outdir"], "{wildcards.sample}", "binning", "dastool", "{wildcards.sample}_DASTool_contig2bin.tsv") ]; then
-        cat os.path.join(config["outdir"], "{wildcards.sample}", "binning", "dastool", "{wildcards.sample}_DASTool_contig2bin.tsv") \
-        | tr -s "\\t" "," > os.path.join(config["outdir"], "{wildcards.sample}", "binning", "dastool", "{wildcards.sample}_DASTool_contig2bin.csv")
+        if [ -s {config[outdir]}/{wildcards.sample}/binning/dastool/{wildcards.sample}_DASTool_contig2bin.tsv ]; then
+        cat {config[outdir]}/{wildcards.sample}/binning/dastool/{wildcards.sample}_DASTool_contig2bin.tsv \
+        | tr -s "\\t" "," > {config[outdir]}/{wildcards.sample}/binning/dastool/{wildcards.sample}_DASTool_contig2bin.csv
 
         python scripts/prepResult.py \
-        --binned s.path.join(config["outdir"], "{wildcards.sample}", "binning", "dastool", "{wildcards.sample}_DASTool_bins") \
-        --output os.path.join(config["outdir"], "{wildcards.sample}", "binning", "dastool/") &> {log}
+        --binned {config[outdir]}/{wildcards.sample}/binning/dastool/{wildcards.sample}_DASTool_bins \
+        --output {config[outdir]}/{wildcards.sample}/binning/dastool/ &> {log}
 
         mkdir -p {output}
 
         graphbin --assembler spades \
-        --graph os.path.join(config["outdir"], "{wildcards.sample}", "assembly", "assembly_graph_after_simplification.gfa") \
+        --graph {config[outdir]}/{wildcards.sample}/assembly/assembly_graph_after_simplification.gfa \
         --contigs {input.contigs_filt} \
-        --paths os.path.join(config["outdir"], "{wildcards.sample}", "assembly", "contigs.paths") \
-        --binned os.path.join(config["outdir"], "{wildcards.sample}", "binning", "dastool", "initial_contig_bins.csv") \
-        --output {output}/{wildcards.sample} &> {log}
+        --paths {config[outdir]}/{wildcards.sample}/assembly/contigs.paths \
+        --binned {config[outdir]}/{wildcards.sample}/binning/dastool/initial_contig_bins.csv \
+        --output {output}/{wildcards.sample} &>> {log}
 
         # For samples without bins, create necessary outputs
         else
@@ -73,6 +73,6 @@ rule checkm:
         mkdir -p {output}
         if [ -s {input}/{wildcards.sample}bins ]; then
         checkm lineage_wf -x fasta {input}/{wildcards.sample}bins/ \
-        {output}/ -t {threads} --tab_table -f {output}/checkm_out.tsv &>> {log}
+        {output}/ -t {threads} --tab_table -f {output}/checkm_out.tsv &> {log}
         fi
         """ 
