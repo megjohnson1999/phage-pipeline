@@ -5,8 +5,8 @@ rule spades:
     threads: 8
     conda: "../envs/spades_env.yml"
     output:
-        dir = directory("out/{sample}/assembly"),
-        contigs = "out/{sample}/assembly/contigs.fasta"
+        dir = directory(os.path.join(config["outdir"], "{sample}", "assembly")),
+        contigs = os.path.join(config["outdir"], "{sample}", "assembly", "contigs.fasta")
     log:
         "logs/spades/{sample}.log"
     shell:
