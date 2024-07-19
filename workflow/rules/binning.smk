@@ -19,8 +19,7 @@ rule binning_prep:
         bowtie2-build {output.contigs_filt} \
         {config[outdir]}/{wildcards.sample}/binning/map_reads/btdb &> {log}
 
-        bowtie2 --no-unal -p {threads} 
-        {config[outdir]}/{wildcards.sample}/binning/map_reads/btdb \
+        bowtie2 --no-unal -p {threads} -x {config[outdir]}/{wildcards.sample}/binning/map_reads/btdb \
         -1 {input.hr1} -2 {input.hr2} -S {output.sam} &>> {log}
 
         samtools view -@ {threads} -Sb -o {output.bam} {output.sam} &>> {log}
@@ -48,23 +47,23 @@ rule concoct:
         mkdir -p {config[outdir]}/{wildcards.sample}/binning/concoct.out
         mkdir -p {config[outdir]}/{wildcards.sample}/binning/concoct.out/results
 
-        cut_up_fasta.py {input.contigs_filt} -c 10000 -o 0 --merge_last -b {output.bed} > {output.fa} &> {log}
+        cut_up_fasta.py {input.contigs_filt} -c 10000 -o 0 --merge_last -b {output.bed} > {output.fa}
 
         concoct_coverage_table.py \
-        {config[outdir]}/{wildcards.sample}/binning/concoct.out/contigs_10k.bed" \
+        {config[outdir]}/{wildcards.sample}/binning/concoct.out/contigs_10k.bed \
         {input.sorted_bam} > {output.cov_table}
 
         concoct --composition_file {config[outdir]}/{wildcards.sample}/binning/concoct.out/contigs_10k.fasta \
         --coverage_file {output.cov_table} \
-        -b {config[outdir]}/{wildcards.sample}/binning/concoct.out/results &>> {log}
+        -b {config[outdir]}/{wildcards.sample}/binning/concoct.out/results &> {log}
 
         merge_cutup_clustering.py \
         {config[outdir]}/{wildcards.sample}/binning/concoct.out/results/clustering_gt1000.csv \
-        > {output.merged_csv} &>> {log}
+        > {output.merged_csv}
 
         mkdir -p {config[outdir]}/{wildcards.sample}/binning/concoct.out/results/fasta_bins
         extract_fasta_bins.py {input.contigs_filt} {output.merged_csv} \
-        --output_path {config[outdir]}/{wildcards.sample}/binning/concoct.out/results/fasta_bins &>> {log}
+        --output_path {config[outdir]}/{wildcards.sample}/binning/concoct.out/results/fasta_bins
         """
 
 rule maxbin:
@@ -80,9 +79,10 @@ rule maxbin:
         "logs/maxbin/{sample}.log"
     shell:
         """
+        
         run_MaxBin.pl -thread {threads} -contig {input.contigs_filt} \
         -reads {input.hr1} -reads2 {input.hr2} \
-        {config[outdir]}/{wildcards.sample}/binning/maxbin.output &> {log} || true
+        -out {config[outdir]}/{wildcards.sample}/binning/maxbin.output &> {log} || true
 
         mkdir -p {output}
         mv {config[outdir]}/{wildcards.sample}/binning/maxbin.output* {output}
