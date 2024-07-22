@@ -95,3 +95,12 @@ rule phispy:
         "logs/phispy/{sample}.log"
     shell:
         "PhiSpy.py {input}/*.gbff -o {output} --output_choice 63 &> {log} || true"
+
+rule phage_all:
+    input:
+        genomad = os.path.join(config["outdir"], "{sample}", "binning", "final_filtered_contigs.fasta")
+        phispy = os.path.join(config["outdir"], "{sample}", "phage_analysis", "phispy")
+    output:
+        os.path.join(config["outdir"], "{sample}", "phage_analysis", "done")
+    shell:
+        "echo 'Done'"
