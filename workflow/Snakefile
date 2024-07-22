@@ -4,10 +4,6 @@ min_version("8.0")
 import os
 
 configfile: "../config/config.yaml"
-
-#if not os.path.exists(config["outdir"]):
-#    os.makedirs(config["outdir"])
-
 SAMPLES, = glob_wildcards(os.path.join(config["reads"],"{sample}_1.fastq.gz"))
 
 include: "rules/preprocessing.smk"
