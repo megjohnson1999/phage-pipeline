@@ -5,3 +5,4 @@ channels:
   - defaults
 dependencies:
   - bakta=1.9.3
+  
