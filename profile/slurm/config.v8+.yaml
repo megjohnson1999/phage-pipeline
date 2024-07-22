@@ -1,18 +1,17 @@
 # slurm resource configuration
-executor: slurm
-#cluster-generic-submit-cmd: "sbatch"
+#executor: slurm
+executor: cluster-generic
+cluster-generic-submit-cmd: "sbatch"
 
 # Resources to use if not otherwise specified    
 default-resources:
   - mem_mb=16000
-  - runtime=540
-  - cores=8
+  - runtime=1440
+  - cores=24
   - slurm_account=sahlab
 
-jobs: 8
+jobs: 20
 latency-wait: 60 
-#local-cores: 8
-#restart-times: 1
 use-conda: True
 keep-going: True
 rerun-incomplete: True
