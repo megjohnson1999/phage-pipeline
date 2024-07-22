@@ -8,7 +8,7 @@ rule spades:
         dir = directory(os.path.join(config["outdir"], "{sample}", "assembly")),
         contigs = os.path.join(config["outdir"], "{sample}", "assembly", "contigs.fasta")
     log:
-        "logs/spades/{sample}.log"
+        os.path.join(config[logs], "spades", "{sample}.log")
     shell:
         """
         spades.py --meta -m 400 -t {threads} -1 {input.hr1} -2 {input.hr2} -o {output.dir} &> {log}

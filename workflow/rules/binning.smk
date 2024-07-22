@@ -11,7 +11,7 @@ rule binning_prep:
         bam = os.path.join(config["outdir"], "{sample}", "binning", "map_reads", "{sample}.bam"),
         sorted_bam = os.path.join(config["outdir"], "{sample}", "binning", "map_reads", "sorted_bam", "{sample}_sorted.bam")
     log:
-        "logs/binning_prep/{sample}.log"
+        os.path.join(config[logs], "binning_prep", "{sample}.log")
     shell:
         """
         cat {input.contigs} | seqkit seq -m 1000 > {output.contigs_filt}
@@ -41,7 +41,7 @@ rule concoct:
         cov_table = os.path.join(config["outdir"], "{sample}", "binning", "concoct.out", "coverage_table.tsv"),
         merged_csv = os.path.join(config["outdir"], "{sample}", "binning", "concoct.out", "results", "clustering_merged.csv")
     log:
-        "logs/concoct/{sample}.log"
+        os.path.join(config[logs], "concoct", "{sample}.log")
     shell:
         """
         mkdir -p {config[outdir]}/{wildcards.sample}/binning/concoct.out
@@ -76,7 +76,7 @@ rule maxbin:
     output:
         directory(os.path.join(config["outdir"], "{sample}", "binning", "maxbin.out"))
     log:
-        "logs/maxbin/{sample}.log"
+        os.path.join(config[logs], "maxbin", "{sample}.log")
     shell:
         """
         
@@ -98,7 +98,7 @@ rule metabat:
         depth = os.path.join(config["outdir"], "{sample}", "binning", "depth.txt"),
         outfile = directory(os.path.join(config["outdir"], "{sample}", "binning", "metabat.out"))
     log:
-        "logs/metabat/{sample}.log"
+        os.path.join(config[logs], "metabat", "{sample}.log")
     shell:
         """
         jgi_summarize_bam_contig_depths --outputDepth {output.depth} {input.sorted_bam}
@@ -131,3 +131,4 @@ rule tsv_files_for_dastool:
         # Convert metabat bins to tsv
         Fasta_to_Contig2Bin.sh -i {input.metabat} -e fa > {output.metabat_tsv}
         """
+        

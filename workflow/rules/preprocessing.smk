@@ -8,7 +8,7 @@ rule fastp:
         tr1 = os.path.join(config["reads"], "{sample}_1_trimmed.fastq.gz"),
         tr2 = os.path.join(config["reads"], "{sample}_2_trimmed.fastq.gz"),
     log:
-        "logs/fastp/{sample}.log"
+        os.path.join(config[logs], "fastp", "{sample}.log")
     shell:
         "fastp -i {input.r1} -I {input.r2} -o {output.tr1} -O {output.tr2} &> {log}"
 
@@ -40,7 +40,7 @@ rule host_removal:
         hr1 = os.path.join(config["reads"], "host_removed", "{sample}_1_hr.fastq.gz"),
         hr2 = os.path.join(config["reads"], "host_removed", "{sample}_2_hr.fastq.gz"),
     log:
-        "logs/host_removal/{sample}.log"
+        os.path.join(config[logs], "host_removal", "{sample}.log")
     shell:
         """
         mkdir -p {config[reads]}/host_removed

@@ -47,7 +47,7 @@ rule genomad:
     output:
         directory(os.path.join(config["outdir"], "{sample}", "phage_analysis", "genomad"))
     log:
-        "logs/genomad/{sample}.log"
+        os.path.join(config[logs], "genomad", "{sample}.log")
     shell:
         """
         # Create the output directory
@@ -61,7 +61,7 @@ rule download_bakta_db:
     output: directory("ref/bakta_db")
     conda: "../envs/bakta_env.yaml"
     log:
-        "logs/download_bakta_db"
+        os.path.join(config[logs], "download_bakta_db")
     shell:
         """
         bakta_db download --output {output} --type full \
@@ -92,7 +92,7 @@ rule phispy:
     output:
         directory(os.path.join(config["outdir"], "{sample}", "phage_analysis", "phispy"))
     log:
-        "logs/phispy/{sample}.log"
+        os.path.join(config[logs], "phispy", "{sample}.log")
     shell:
         "PhiSpy.py {input}/*.gbff -o {output} --output_choice 63 &> {log} || true"
 
