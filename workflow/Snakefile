@@ -14,5 +14,5 @@ include: "rules/phages.smk"
 
 rule all:
     input:
-        expand(os.path.join(config["outdir"], "{sample}", "phage_analysis", "genomad"), sample = SAMPLES)
+        expand(os.path.join(config["outdir"], "{sample}", "phage_analysis", "done"), sample = SAMPLES)
     default_target: True

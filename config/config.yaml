@@ -1,5 +1,5 @@
 reads: "reads"
 outdir: "out"
-logdir: "logs"
+logs: "logs"
 
 host_database: "ref/hg37dec_v0.1"
