@@ -73,7 +73,7 @@ rule bakta:
     input:
         contigs = os.path.join(config["outdir"], "{sample}", "binning", "final_filt_contigs_5000.fasta"),
         db = "ref/bakta_db"
-    threads: config.get("num_threads", 8)
+    threads: 24
     conda: "../envs/bakta_env.yaml"
     output: 
         directory(os.path.join(config["outdir"], "{sample}", "phage_analysis", "bakta"))
@@ -88,7 +88,7 @@ rule bakta:
 rule phispy:
     input:
         os.path.join(config["outdir"], "{sample}", "phage_analysis", "bakta")
-    threads: config.get("num_threads", 8)
+    threads: 24
     conda: "../envs/phispy_env.yaml"
     output:
         directory(os.path.join(config["outdir"], "{sample}", "phage_analysis", "phispy"))

@@ -3,7 +3,7 @@ rule binning_prep:
         hr1 = os.path.join(config["reads"], "host_removed", "{sample}_1_hr.fastq.gz"),
         hr2 = os.path.join(config["reads"], "host_removed", "{sample}_2_hr.fastq.gz"),
         contigs = os.path.join(config["outdir"], "{sample}", "assembly", "contigs.fasta")
-    threads: 8
+    threads: 12
     conda: "../envs/bowtie2.yaml"
     output:
         contigs_filt = os.path.join(config["outdir"], "{sample}", "assembly", "contigs_filt_1000bp.fasta"),
@@ -33,7 +33,7 @@ rule concoct:
     input:
         contigs_filt = os.path.join(config["outdir"], "{sample}", "assembly", "contigs_filt_1000bp.fasta"),
         sorted_bam = os.path.join(config["outdir"], "{sample}", "binning", "map_reads", "sorted_bam", "{sample}_sorted.bam")
-    threads: config.get("num_threads", 8)
+    threads: 24
     conda: "../envs/concoct_env.yaml"
     output:
         bed = os.path.join(config["outdir"], "{sample}", "binning", "concoct.out", "contigs_10k.bed"),
@@ -71,7 +71,7 @@ rule maxbin:
         hr1 = os.path.join(config["reads"], "host_removed", "{sample}_1_hr.fastq.gz"),
         hr2 = os.path.join(config["reads"], "host_removed", "{sample}_2_hr.fastq.gz"),
         contigs_filt = os.path.join(config["outdir"], "{sample}", "assembly", "contigs_filt_1000bp.fasta")
-    threads: config.get("num_threads", 8)
+    threads: 24
     conda: "../envs/maxbin_env.yaml"
     output:
         directory(os.path.join(config["outdir"], "{sample}", "binning", "maxbin.out"))
@@ -92,7 +92,7 @@ rule metabat:
     input:
         contigs_filt = os.path.join(config["outdir"], "{sample}", "assembly", "contigs_filt_1000bp.fasta"),
         sorted_bam = os.path.join(config["outdir"], "{sample}", "binning", "map_reads", "sorted_bam", "{sample}_sorted.bam")
-    threads: config.get("num_threads", 8)
+    threads: 24
     conda: "../envs/metabat_env.yaml"
     output:
         depth = os.path.join(config["outdir"], "{sample}", "binning", "depth.txt"),

@@ -4,7 +4,7 @@ rule dastool:
         concoct_tsv = os.path.join(config["outdir"], "{sample}", "binning", "dastool", "concoct.contigs2bin.tsv"),
         maxbin_tsv = os.path.join(config["outdir"], "{sample}", "binning", "dastool", "maxbin.contigs2bin.tsv"),
         metabat_tsv = os.path.join(config["outdir"], "{sample}", "binning", "dastool", "metabat.contigs2bin.tsv")
-    threads: config.get("num_threads", 8)
+    threads: 24
     conda: "../envs/dastool_env.yaml"
     output:
         os.path.join(config["outdir"], "{sample}", "binning", "done")
@@ -26,7 +26,7 @@ rule graphbin:
     input:
         contigs_filt = os.path.join(config["outdir"], "{sample}", "assembly", "contigs_filt_1000bp.fasta"),
         dastool = os.path.join(config["outdir"], "{sample}", "binning", "done")
-    threads: config.get("num_threads", 8)
+    threads: 24
     conda: "../envs/graphbin_env.yaml"
     output:
         directory(os.path.join(config["outdir"], "{sample}", "binning", "graphbin"))
@@ -62,7 +62,7 @@ rule graphbin:
 rule checkm:
     input:
         os.path.join(config["outdir"], "{sample}", "binning", "graphbin")
-    threads: config.get("num_threads", 8)
+    threads: 24
     conda: "envs/checkm_env.yaml"
     output:
         directory(os.path.join(config["outdir"], "{sample}", "binning", "checkm"))
