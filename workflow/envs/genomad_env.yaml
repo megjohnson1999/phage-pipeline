@@ -5,3 +5,4 @@ channels:
   - defaults
 dependencies:
   - genomad=1.8.0
+  - mmseqs2=14.7e284

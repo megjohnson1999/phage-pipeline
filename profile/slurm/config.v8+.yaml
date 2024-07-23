@@ -8,7 +8,6 @@ default-resources:
   - mem_mb=16000
   - runtime=1440
   - cores=24
-  - job-name={rule}_job
   - slurm_account=sahlab
 
 jobs: 20
@@ -27,7 +26,7 @@ set-resources:
         mem: 512G
         cpus_per_task: 12
     genomad:
-        mem: 64G
+        mem: 200G
     checkm:
         mem: 50G
 

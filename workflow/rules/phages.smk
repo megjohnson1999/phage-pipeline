@@ -42,7 +42,7 @@ rule genomad:
     input:
         contigs = os.path.join(config["outdir"], "{sample}", "binning", "final_filtered_contigs.fasta"),
         db = "ref/genomad_db"
-    threads: config.get("num_threads", 8)
+    threads: 24
     conda: "../envs/genomad_env.yaml"
     output:
         directory(os.path.join(config["outdir"], "{sample}", "phage_analysis", "genomad"))
@@ -54,6 +54,7 @@ rule genomad:
         mkdir -p {output}
         # Run genomad
         genomad end-to-end --cleanup --threads {threads} \
+        --splits 16 \
         {input.contigs} {output} {input.db} &> {log}
         """
 
@@ -98,7 +99,7 @@ rule phispy:
 
 rule phage_all:
     input:
-        genomad = os.path.join(config["outdir"], "{sample}", "binning", "final_filtered_contigs.fasta"),
+        genomad = os.path.join(config["outdir"], "{sample}", "binning", "genomad"),
         phispy = os.path.join(config["outdir"], "{sample}", "phage_analysis", "phispy")
     output:
         os.path.join(config["outdir"], "{sample}", "phage_analysis", "done")
