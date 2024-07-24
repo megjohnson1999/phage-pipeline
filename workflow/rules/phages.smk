@@ -99,10 +99,10 @@ rule phispy:
 
 rule phage_all:
     input:
-        checkm = os.path.join(config["outdir"], "{sample}", "binning", "checkm")
+        checkm = os.path.join(config["outdir"], "{sample}", "binning", "checkm"),
         genomad = os.path.join(config["outdir"], "{sample}", "phage_analysis", "genomad"),
         phispy = os.path.join(config["outdir"], "{sample}", "phage_analysis", "phispy")
     output:
         os.path.join(config["outdir"], "{sample}", "phage_analysis", "done")
     shell:
-        "echo 'Done'"
+        "touch {config[outdir]}/{wildcards.sample}/phage_analysis/done"
