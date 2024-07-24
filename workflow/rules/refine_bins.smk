@@ -63,7 +63,7 @@ rule checkm:
     input:
         os.path.join(config["outdir"], "{sample}", "binning", "graphbin")
     threads: 24
-    conda: "envs/checkm_env.yaml"
+    conda: "../envs/checkm_env.yaml"
     output:
         directory(os.path.join(config["outdir"], "{sample}", "binning", "checkm"))
     log:
