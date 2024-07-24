@@ -99,7 +99,7 @@ rule phispy:
 
 rule phage_all:
     input:
-        genomad = os.path.join(config["outdir"], "{sample}", "binning", "genomad"),
+        genomad = os.path.join(config["outdir"], "{sample}", "phage_analysis", "genomad"),
         phispy = os.path.join(config["outdir"], "{sample}", "phage_analysis", "phispy")
     output:
         os.path.join(config["outdir"], "{sample}", "phage_analysis", "done")
