@@ -1,7 +1,7 @@
 # slurm resource configuration
-#executor: slurm
-executor: cluster-generic
-cluster-generic-submit-cmd: "sbatch"
+executor: slurm
+#executor: cluster-generic
+#cluster-generic-submit-cmd: "sbatch"
 
 # Resources to use if not otherwise specified    
 default-resources:
