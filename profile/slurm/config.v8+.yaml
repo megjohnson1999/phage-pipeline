@@ -17,6 +17,7 @@ keep-going: True
 rerun-incomplete: True
 printshellcmds: True
 scheduler: greedy
+restart-times: 1
 
 set-resources:
     host_removal:
@@ -25,6 +26,7 @@ set-resources:
     spades:
         mem: 512G
         cpus_per_task: 12
+        time: 400 
     genomad:
         mem: 200G
     checkm:
