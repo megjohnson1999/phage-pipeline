@@ -11,5 +11,5 @@ rule spades:
         os.path.join(config["logs"], "spades", "{sample}.log")
     shell:
         """
-        spades.py --meta -m 400 -t {threads} -1 {input.hr1} -2 {input.hr2} -o {output.dir} &> {log}
+        spades.py --meta --only-assembler -m 400 -t {threads} -1 {input.hr1} -2 {input.hr2} -o {output.dir} &> {log}
         """
