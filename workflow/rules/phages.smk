@@ -10,16 +10,36 @@ rule filter_unbinned:
         """
         # If there were bins for the sample...
         if [ -s {input.graphbin}/{wildcards.sample}graphbin_unbinned.csv ]; then
+
         # Get fasta file of unbinned sequences
         seqkit grep -f {input.graphbin}/{wildcards.sample}graphbin_unbinned.csv \
         {input.contigs_filt} -o {config[outdir]}/{wildcards.sample}/binning/unbinned_contigs.fasta
+
+        # Extract the sequences >=4000bp, separate into individual fasta files, move to directory
+        cat {config[outdir]}/{wildcards.sample}/binning/unbinned_contigs.fasta \
+        | seqkit seq -m 4000 \
+        > {config[outdir]}/{wildcards.sample}/binning/filt_4000_seqs_to_keep.fasta
+
+        cat {config[outdir]}/{wildcards.sample}/binning/filt_4000_seqs_to_keep.fasta \
+        | awk '{\
+        if (substr($0, 1, 1)==">") {filename=(substr($0,2) ".fasta")}
+        print $0 >> filename
+        close(filename)
+        }'
+
+        mv NODE* {input.graphbin}/{wildcards.sample}bins
+
         # Extract the IDs of the unbinned sequences <4000bp
         cat {config[outdir]}/{wildcards.sample}/binning/unbinned_contigs.fasta \
-        | seqkit seq -n -M 4000 \
+        | seqkit seq -n -M 3999 \
         > {config[outdir]}/{wildcards.sample}/binning/filt_4000_seqs_to_discard.txt
         # From main contigs file, get all sequences except for those on this list
         seqkit grep -v -f {config[outdir]}/{wildcards.sample}/binning/filt_4000_seqs_to_discard.txt \
         {input.contigs_filt} -o {output.final_contigs}
+
+        mv {input.graphbin}/{wildcards.sample}bins/bin_unbinned.fa.fasta {input.graphbin}
+
+
         # Otherwise, if no bins were determined for the sample...
         else
         echo "No sequences were binned for sample {wildcards.sample}"
