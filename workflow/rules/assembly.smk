@@ -9,7 +9,10 @@ rule spades:
         contigs = os.path.join(config["outdir"], "{sample}", "assembly", "contigs.fasta")
     log:
         os.path.join(config["logs"], "spades", "{sample}.log")
+    benchmark:
+        os.path.join(config["benchmarks"], "spades", "{sample}_benchmark.txt")
     shell:
         """
-        spades.py --meta --only-assembler -m 400 -t {threads} -1 {input.hr1} -2 {input.hr2} -o {output.dir} &> {log}
+        spades.py --meta --only-assembler \
+        -m 400 -t {threads} -1 {input.hr1} -2 {input.hr2} -o {output.dir} &> {log}
         """
