@@ -81,7 +81,7 @@ rule bakta:
         os.path.join(config["logs"], "bakta", "{sample}.log")
     shell:
         """
-        bakta --db {input.db}/db --force --output {output} \
+        bakta --db {input.db}/db --force --skip-plot --output {output} \
         --threads {threads} {input.contigs} &> {log}
         """
 
