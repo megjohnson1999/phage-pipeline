@@ -66,6 +66,7 @@ rule filter_unbinned:
     conda: "../envs/bowtie2.yaml"
     output:
         final_contigs = os.path.join(config["outdir"], "{sample}", "binning", "final_filtered_contigs.fasta"),
+        unbinned_4000bp = os.path.join(config["outdir"], "{sample}", "binning","filt_4000_seqs_to_keep.fasta"),
         contigs_5000bp = os.path.join(config["outdir"], "{sample}", "binning", "final_filt_contigs_5000.fasta")
     shell:
         """
@@ -76,25 +77,15 @@ rule filter_unbinned:
         seqkit grep -f {input.graphbin}/{wildcards.sample}graphbin_unbinned.csv \
         {input.contigs_filt} -o {config[outdir]}/{wildcards.sample}/binning/unbinned_contigs.fasta
 
-        # Extract the sequences >=4000bp, separate into individual fasta files, move to directory
+        # Extract the sequences >=4000bp
         cat {config[outdir]}/{wildcards.sample}/binning/unbinned_contigs.fasta \
-        | seqkit seq -m 4000 \
-        > {config[outdir]}/{wildcards.sample}/binning/filt_4000_seqs_to_keep.fasta
-
-        cd {config[outdir]}/{wildcards.sample}/binning
-        cat filt_4000_seqs_to_keep.fasta \
-        | awk '{\
-        if (substr($0, 1, 1)==">") {filename=(substr($0,2) ".fasta")}
-        print $0 >> filename
-        close(filename)
-        }'
-        mv NODE* graphbin/{wildcards.sample}bins
-        cd ../../../..
+        | seqkit seq -m 4000 > {output.unbinned_4000bp}
 
         # Extract the IDs of the unbinned sequences <4000bp
         cat {config[outdir]}/{wildcards.sample}/binning/unbinned_contigs.fasta \
         | seqkit seq -n -M 3999 \
         > {config[outdir]}/{wildcards.sample}/binning/filt_4000_seqs_to_discard.txt
+
         # From main contigs file, get all sequences except for those on this list
         seqkit grep -v -f {config[outdir]}/{wildcards.sample}/binning/filt_4000_seqs_to_discard.txt \
         {input.contigs_filt} -o {output.final_contigs}
@@ -107,17 +98,7 @@ rule filter_unbinned:
         echo "No sequences were binned for sample {wildcards.sample}"
         # Filter sequences <4000bp from main contigs file
         cat {input.contigs_filt} | seqkit seq -m 4000 > {output.final_contigs}
-
-        mkdir -p {input}/{wildcards.sample}bins
-        cd {config[outdir]}/{wildcards.sample}/binning
-        cat final_filtered_contigs.fasta \
-        | awk '{\
-        if (substr($0, 1, 1)==">") {filename=(substr($0,2) ".fasta")}
-        print $0 >> filename
-        close(filename)
-        }'
-        mv NODE* graphbin/{wildcards.sample}bins
-        cd ../../../..
+        cp {output.final_contigs} {output.unbinned_4000bp}
 
         fi
 
@@ -125,9 +106,30 @@ rule filter_unbinned:
         cat {output.final_contigs} | seqkit seq -m 5000 > {output.contigs_5000bp}
         """
 
+rule separate_unbinned:
+    input: 
+        os.path.join(config["outdir"], "{sample}", "binning","filt_4000_seqs_to_keep.fasta")
+    threads: 8
+    output:
+        os.path.join(config["outdir"], "{sample}", "binning", "graphbin", "{sample}.bins")
+    shell:
+        """
+        mkdir -p {output}
+        cd {config[outdir]}/{wildcards.sample}/binning
+        cat filt_4000_seqs_to_keep.fasta \
+        | awk '{\
+        if (substr($0, 1, 1)==">") {filename=(substr($0,2) ".fasta")}
+        print $0 >> filename
+        close(filename)
+        }'
+        mv NODE* graphbin/{wildcards.sample}bins
+        cd ../../../..
+        """
+    
+
 rule checkm:
     input:
-        os.path.join(config["outdir"], "{sample}", "binning", "graphbin")
+        os.path.join(config["outdir"], "{sample}", "binning", "graphbin", "{sample}.bins")
     threads: 24
     conda: "../envs/checkm_env.yaml"
     output:
