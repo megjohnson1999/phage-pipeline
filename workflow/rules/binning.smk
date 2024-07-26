@@ -11,7 +11,9 @@ rule binning_prep:
         bam = os.path.join(config["outdir"], "{sample}", "binning", "map_reads", "{sample}.bam"),
         sorted_bam = os.path.join(config["outdir"], "{sample}", "binning", "map_reads", "sorted_bam", "{sample}_sorted.bam")
     log:
-        os.path.join(config["logs"], "binning_prep", "{sample}.log")
+        os.path.join(config["outdir"], "logs", "binning_prep", "{sample}.log")
+    benchmark:
+        os.path.join(config["outdir"], "benchmarks", "binning_prep", "{sample}_bmrk.txt")
     shell:
         """
         cat {input.contigs} | seqkit seq -m 1000 > {output.contigs_filt}
@@ -41,7 +43,9 @@ rule concoct:
         cov_table = os.path.join(config["outdir"], "{sample}", "binning", "concoct.out", "coverage_table.tsv"),
         merged_csv = os.path.join(config["outdir"], "{sample}", "binning", "concoct.out", "results", "clustering_merged.csv")
     log:
-        os.path.join(config["logs"], "concoct", "{sample}.log")
+        os.path.join(config["outdir"], "logs", "concoct", "{sample}.log")
+    benchmark:
+        os.path.join(config["outdir"], "benchmarks", "concoct", "{sample}_bmrk.txt")
     shell:
         """
         mkdir -p {config[outdir]}/{wildcards.sample}/binning/concoct.out
@@ -76,7 +80,9 @@ rule maxbin:
     output:
         directory(os.path.join(config["outdir"], "{sample}", "binning", "maxbin.out"))
     log:
-        os.path.join(config["logs"], "maxbin", "{sample}.log")
+        os.path.join(config["outdir"], "logs", "maxbin", "{sample}.log")
+    benchmark:
+        os.path.join(config["outdir"], "benchmarks", "maxbin", "{sample}_bmrk.txt")
     shell:
         """
         
@@ -98,7 +104,9 @@ rule metabat:
         depth = os.path.join(config["outdir"], "{sample}", "binning", "depth.txt"),
         outfile = directory(os.path.join(config["outdir"], "{sample}", "binning", "metabat.out"))
     log:
-        os.path.join(config["logs"], "metabat", "{sample}.log")
+        os.path.join(config["outdir"], "logs", "metabat", "{sample}.log")
+    benchmark:
+        os.path.join(config["outdir"], "benchmarks", "metabat", "{sample}_bmrk.txt")
     shell:
         """
         jgi_summarize_bam_contig_depths --outputDepth {output.depth} {input.sorted_bam}
