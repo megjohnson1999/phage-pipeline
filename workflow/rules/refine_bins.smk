@@ -9,7 +9,9 @@ rule dastool:
     output:
         os.path.join(config["outdir"], "{sample}", "binning", "done")
     log:
-        os.path.join(config["logs"], "dastool", "{sample}.log")
+        os.path.join(config["outdir"], "logs", "dastool", "{sample}.log")
+    benchmark:
+        os.path.join(config["outdir"], "benchmarks", "dastool", "{sample}_bmrk.txt")
     shell:
         """
         touch {output}
@@ -31,7 +33,9 @@ rule graphbin:
     output:
         directory(os.path.join(config["outdir"], "{sample}", "binning", "graphbin"))
     log:
-        os.path.join(config["logs"], "graphbin", "{sample}.log")
+        os.path.join(config["outdir"], "logs", "graphbin", "{sample}.log")
+    benchmark:
+        os.path.join(config["outdir"], "benchmarks", "graphbin", "{sample}_bmrk.txt")
     shell:
         """
         # For samples with bins, format bins and run graphBin
@@ -67,7 +71,9 @@ rule checkm:
     output:
         directory(os.path.join(config["outdir"], "{sample}", "binning", "checkm"))
     log:
-        os.path.join(config["logs"], "checkm", "{sample}.log")
+        os.path.join(config["outdir"], "logs", "checkm", "{sample}.log")
+    benchmark:
+        os.path.join(config["outdir"], "benchmarks", "checkm", "{sample}_bmrk.txt")
     shell:
         """
         mkdir -p {output}
