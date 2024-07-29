@@ -20,12 +20,12 @@ rule filter_unbinned:
         # From main contigs file, get all sequences except for those on this list
         seqkit grep -v -f {config[outdir]}/{wildcards.sample}/binning/filt_4000_seqs_to_discard.txt \
         {input.contigs_filt} -o {output.final_contigs}
+
         # Otherwise, if no bins were determined for the sample...
         else
         echo "No sequences were binned for sample {wildcards.sample}"
         # Filter sequences <4000bp from main contigs file
         cat {input.contigs_filt} | seqkit seq -m 4000 > {output.final_contigs}
-
         fi
 
         # Filter contigs for phispy input (5000bp filter)
