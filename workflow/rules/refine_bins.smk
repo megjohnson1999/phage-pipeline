@@ -79,6 +79,6 @@ rule checkm:
         mkdir -p {output}
         if [ -s {input}/{wildcards.sample}bins ]; then
         checkm lineage_wf -x fasta {input}/{wildcards.sample}bins/ \
-        {output}/ -t {threads} --tab_table -f {output}/checkm_out.tsv &> {log}
+        {output}/ -t {threads} --tab_table -f {output}/checkm_out.tsv 2> {log}
         fi
         """ 
