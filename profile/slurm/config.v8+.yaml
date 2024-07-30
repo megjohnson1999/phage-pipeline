@@ -17,7 +17,7 @@ keep-going: True
 rerun-incomplete: True
 printshellcmds: True
 scheduler: greedy
-restart-times: 1
+#restart-times: 1
 
 set-resources:
     host_removal:

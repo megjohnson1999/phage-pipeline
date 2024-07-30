@@ -20,7 +20,7 @@ rule get_db:
     output:
         "ref/db_done"
     log:
-        os.path.join(config["logs"], "get_db")
+        os.path.join(config["outdir"], "logs", "get_db")
     shell:
         """
         mkdir -p ref

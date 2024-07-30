@@ -5,7 +5,6 @@ channels:
   - defaults
 dependencies:
   - bowtie2=2.5.4
-  - bzip2=1.0.8
   - python=3.12.3
   - samtools=1.20
   - seqkit=2.8.2

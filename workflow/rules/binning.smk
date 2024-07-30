@@ -120,7 +120,7 @@ rule tsv_files_for_dastool:
         concoct = os.path.join(config["outdir"], "{sample}", "binning", "concoct.out", "results", "clustering_merged.csv"),
         maxbin = os.path.join(config["outdir"], "{sample}", "binning", "maxbin.out"),
         metabat = os.path.join(config["outdir"], "{sample}", "binning", "metabat.out")
-    conda: "../envs/dastool_test2.yaml"
+    conda: "../envs/dastool_env.yaml"
     output:
         concoct_tsv = os.path.join(config["outdir"], "{sample}", "binning", "dastool", "concoct.contigs2bin.tsv"),
         maxbin_tsv = os.path.join(config["outdir"], "{sample}", "binning", "dastool", "maxbin.contigs2bin.tsv"),
