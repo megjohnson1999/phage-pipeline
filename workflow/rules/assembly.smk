@@ -14,5 +14,5 @@ rule spades:
     shell:
         """
         spades.py --meta --only-assembler \
-        -m 400 -t {threads} -1 {input.hr1} -2 {input.hr2} -o {output.dir} &> {log}
+        -m 400 -t {threads} -1 {input.hr1} -2 {input.hr2} -o {output.dir} 2> {log}
         """
