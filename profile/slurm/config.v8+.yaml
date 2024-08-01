@@ -22,7 +22,7 @@ scheduler: greedy
 set-resources:
     host_removal:
         mem: 50G
-        cpus_per_task: 8
+        cpus_per_task: 16
     spades:
         mem: 512G
         cpus_per_task: 12

@@ -36,7 +36,7 @@ rule host_removal:
         db_done = "ref/db_done"
     params:
         db = config["host_database"]
-    threads: 8
+    threads: 16
     conda: "../envs/bowtie2.yaml"
     output:
         hr1 = os.path.join(config["reads"], "host_removed", "{sample}_1_hr.fastq.gz"),
