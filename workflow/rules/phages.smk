@@ -100,6 +100,7 @@ rule phispy:
 
 rule phage_all:
     input:
+        cat = os.join.path(config["outdir"], "{sample}", "taxonomy", "CAT")
         checkm = os.path.join(config["outdir"], "{sample}", "binning", "checkm"),
         genomad = os.path.join(config["outdir"], "{sample}", "phage_analysis", "genomad"),
         phispy = os.path.join(config["outdir"], "{sample}", "phage_analysis", "phispy")
