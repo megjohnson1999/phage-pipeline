@@ -20,7 +20,7 @@ rule dastool:
         -i {input.concoct_tsv},{input.maxbin_tsv},{input.metabat_tsv} \
         -l concoct,maxbin,metabat -c {input.contigs_filt} \
         -o {config[outdir]}/{wildcards.sample}/binning/dastool/{wildcards.sample} \
-        &> {log} || true
+        2> {log} || true
         
         """
 
@@ -45,7 +45,7 @@ rule graphbin:
 
         python scripts/prepResult.py \
         --binned {config[outdir]}/{wildcards.sample}/binning/dastool/{wildcards.sample}_DASTool_bins \
-        --output {config[outdir]}/{wildcards.sample}/binning/dastool/ &> {log}
+        --output {config[outdir]}/{wildcards.sample}/binning/dastool/ 2> {log}
 
         mkdir -p {output}
 
@@ -54,7 +54,7 @@ rule graphbin:
         --contigs {input.contigs_filt} \
         --paths {config[outdir]}/{wildcards.sample}/assembly/contigs.paths \
         --binned {config[outdir]}/{wildcards.sample}/binning/dastool/initial_contig_bins.csv \
-        --output {output}/{wildcards.sample} &>> {log}
+        --output {output}/{wildcards.sample} 2>> {log}
 
         # For samples without bins, create necessary outputs
         else

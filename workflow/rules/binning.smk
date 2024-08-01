@@ -19,16 +19,16 @@ rule binning_prep:
         cat {input.contigs} | seqkit seq -m 1000 > {output.contigs_filt}
 
         bowtie2-build {output.contigs_filt} \
-        {config[outdir]}/{wildcards.sample}/binning/map_reads/btdb &> {log}
+        {config[outdir]}/{wildcards.sample}/binning/map_reads/btdb 2> {log}
 
         bowtie2 --no-unal -p {threads} -x {config[outdir]}/{wildcards.sample}/binning/map_reads/btdb \
-        -1 {input.hr1} -2 {input.hr2} -S {output.sam} &>> {log}
+        -1 {input.hr1} -2 {input.hr2} -S {output.sam} 2>> {log}
 
-        samtools view -@ {threads} -Sb -o {output.bam} {output.sam} &>> {log}
+        samtools view -@ {threads} -Sb -o {output.bam} {output.sam} 2>> {log}
 
-        samtools sort -O bam -o {output.sorted_bam} {output.bam} &>> {log}
+        samtools sort -O bam -o {output.sorted_bam} {output.bam} 2>> {log}
 
-        samtools index {output.sorted_bam} &>> {log}
+        samtools index {output.sorted_bam} 2>> {log}
         """
 
 rule concoct:
@@ -59,7 +59,7 @@ rule concoct:
 
         concoct --composition_file {config[outdir]}/{wildcards.sample}/binning/concoct.out/contigs_10k.fasta \
         --coverage_file {output.cov_table} \
-        -b {config[outdir]}/{wildcards.sample}/binning/concoct.out/results &> {log}
+        -b {config[outdir]}/{wildcards.sample}/binning/concoct.out/results 2> {log}
 
         merge_cutup_clustering.py \
         {config[outdir]}/{wildcards.sample}/binning/concoct.out/results/clustering_gt1000.csv \
@@ -88,7 +88,7 @@ rule maxbin:
         
         run_MaxBin.pl -thread {threads} -contig {input.contigs_filt} \
         -reads {input.hr1} -reads2 {input.hr2} \
-        -out {config[outdir]}/{wildcards.sample}/binning/maxbin.output &> {log} || true
+        -out {config[outdir]}/{wildcards.sample}/binning/maxbin.output 2> {log} || true
 
         mkdir -p {output}
         mv {config[outdir]}/{wildcards.sample}/binning/maxbin.output* {output}
@@ -112,7 +112,7 @@ rule metabat:
         jgi_summarize_bam_contig_depths --outputDepth {output.depth} {input.sorted_bam}
         mkdir -p {output.outfile}
         
-        metabat2 -i {input.contigs_filt} -a {output.depth} -o {output.outfile}/bin -v &> {log}
+        metabat2 -i {input.contigs_filt} -a {output.depth} -o {output.outfile}/bin -v 2> {log}
         """
 
 rule tsv_files_for_dastool:

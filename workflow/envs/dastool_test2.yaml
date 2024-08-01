@@ -1,7 +1,0 @@
-name: dastool
-channels:
-  - conda-forge
-  - bioconda
-  - defaults
-dependencies:
-  - das_tool=1.1.7

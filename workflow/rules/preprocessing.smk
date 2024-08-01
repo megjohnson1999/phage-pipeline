@@ -12,7 +12,7 @@ rule fastp:
     benchmark:
         os.path.join(config["outdir"], "benchmarks", "fastp", "{sample}_bmrk.txt")
     shell:
-        "fastp -i {input.r1} -I {input.r2} -o {output.tr1} -O {output.tr2} &> {log}"
+        "fastp -i {input.r1} -I {input.r2} -o {output.tr1} -O {output.tr2} 2> {log}"
 
 # Get database for host removal step
 rule get_db:
@@ -24,7 +24,7 @@ rule get_db:
     shell:
         """
         mkdir -p ref
-        kneaddata_database --download human_genome bowtie2 ref &> {log}
+        kneaddata_database --download human_genome bowtie2 ref 2> {log}
         touch ref/db_done
         """
     
@@ -36,7 +36,7 @@ rule host_removal:
         db_done = "ref/db_done"
     params:
         db = config["host_database"]
-    threads: 8
+    threads: 16
     conda: "../envs/bowtie2.yaml"
     output:
         hr1 = os.path.join(config["reads"], "host_removed", "{sample}_1_hr.fastq.gz"),
@@ -51,7 +51,7 @@ rule host_removal:
         bowtie2 -p {threads} -x {params.db} -1 {input.tr1} -2 {input.tr2} \
         --very-sensitive-local \
         --un-conc-gz {config[reads]}/host_removed/{wildcards.sample} \
-        &> {log}
+        2> {log}
         mv {config[reads]}/host_removed/{wildcards.sample}.1 {output.hr1}
         mv {config[reads]}/host_removed/{wildcards.sample}.2 {output.hr2}
         """
