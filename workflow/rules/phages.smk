@@ -57,7 +57,7 @@ rule genomad:
         # Run genomad
         genomad end-to-end --cleanup --threads {threads} \
         --splits 16 \
-        {input.contigs} {output} {input.db} &> {log}
+        {input.contigs} {output} {input.db} 2> {log}
         """
 
 rule download_bakta_db:
@@ -81,7 +81,7 @@ rule bakta:
     shell:
         """
         bakta --db {input.db}/db --force --skip-plot --output {output} \
-        --threads {threads} {input.contigs} &> {log}
+        --threads {threads} {input.contigs} 2> {log}
         """
 
 rule phispy:
@@ -96,7 +96,7 @@ rule phispy:
     benchmark:
         os.path.join(config["outdir"], "benchmarks", "phispy", "{sample}_bmrk.txt")
     shell:
-        "PhiSpy.py {input}/*.gbff -o {output} --output_choice 63 &> {log} || true"
+        "PhiSpy.py {input}/*.gbff -o {output} --output_choice 63 2> {log} || true"
 
 rule phage_all:
     input:
