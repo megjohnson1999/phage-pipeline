@@ -9,8 +9,9 @@ rule cat:
     output:
         os.path.join(config["outdir"], "{sample}", "taxonomy", "CAT")
     log:
-        os.path.join(config["outdir"], "logs", "CAT", "{sample}_bmrk.txt")
+        os.path.join(config["outdir"], "logs", "CAT", "{sample}.log")
     benchmark:
+        os.path.join(config["outdir"], "benchmarks", "CAT", "{sample}_bmrk.txt")
     shell:
         """
         set -ue
