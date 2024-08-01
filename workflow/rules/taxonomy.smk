@@ -1,13 +1,13 @@
 rule cat:
     input:
-        os.join.path(config["outdir"], "{sample}", "binning", "final_filtered_contigs.fasta")
+        os.path.join(config["outdir"], "{sample}", "binning", "final_filtered_contigs.fasta")
     params:
-        db = os.join.path(config["cat_database"], "2021-01-07_CAT_database"),
-        tax = os.join.path(config["cat_database"], "2021-01-07_taxonomy")
+        db = os.path.join(config["cat_database"], "2021-01-07_CAT_database"),
+        tax = os.path.join(config["cat_database"], "2021-01-07_taxonomy")
     threads: 24
     conda: "../envs/cat_env.yaml"
     output:
-        os.join.path(config["outdir"], "{sample}", "taxonomy", "CAT")
+        os.path.join(config["outdir"], "{sample}", "taxonomy", "CAT")
     log:
         os.path.join(config["outdir"], "logs", "CAT", "{sample}_bmrk.txt")
     benchmark:
