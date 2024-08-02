@@ -32,6 +32,6 @@ set-resources:
     checkm:
         mem: 50G
     cat:
-        mem: 70G
+        mem: 150G
 
         

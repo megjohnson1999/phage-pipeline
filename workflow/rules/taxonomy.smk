@@ -7,7 +7,7 @@ rule cat:
     threads: 24
     conda: "../envs/cat_env.yaml"
     output:
-        os.path.join(config["outdir"], "{sample}", "taxonomy", "CAT")
+        directory(os.path.join(config["outdir"], "{sample}", "taxonomy", "CAT"))
     log:
         os.path.join(config["outdir"], "logs", "CAT", "{sample}.log")
     benchmark:
