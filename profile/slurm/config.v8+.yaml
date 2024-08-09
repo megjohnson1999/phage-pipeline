@@ -10,7 +10,7 @@ default-resources:
   - cores=24
   - slurm_account=sahlab
 
-jobs: 20
+jobs: 40
 latency-wait: 60 
 use-conda: True
 keep-going: True
