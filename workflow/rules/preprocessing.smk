@@ -41,7 +41,6 @@ rule host_removal:
     output:
         hr1 = os.path.join(config["reads"], "host_removed", "{sample}_1_hr.fastq.gz"),
         hr2 = os.path.join(config["reads"], "host_removed", "{sample}_2_hr.fastq.gz"),
-        hr3 = os.path.join(config["reads"], "host_removed", "{sample}_unpaired_hr.fastq.gz")
     log:
         os.path.join(config["outdir"], "logs", "host_removal", "{sample}.log")
     benchmark:
@@ -58,6 +57,4 @@ rule host_removal:
         | gzip -c > {output.hr1}
         samtools fastq -F 3584 -f 141 {config[reads]}/host_removed/{wildcards.sample}_output.bam \
         | gzip -c > {output.hr2}
-        samtools fastq -f 4 -F 1 {config[reads]}/host_removed/{wildcards.sample}_output.bam \
-        | gzip -c > {output.hr3}
         """
