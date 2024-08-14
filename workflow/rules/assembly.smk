@@ -2,6 +2,7 @@ rule spades:
     input:
         hr1 = os.path.join(config["reads"], "host_removed", "{sample}_1_hr.fastq.gz"),
         hr2 = os.path.join(config["reads"], "host_removed", "{sample}_2_hr.fastq.gz"),
+        hr3 = os.path.join(config["reads"], "host_removed", "{sample}_unpaired_hr.fastq.gz")
     threads: 12
     conda: "../envs/spades_env.yml"
     output:
@@ -14,5 +15,7 @@ rule spades:
     shell:
         """
         spades.py --meta --only-assembler \
-        -m 400 -t {threads} -1 {input.hr1} -2 {input.hr2} -o {output.dir} 2> {log}
+        -m 400 -t {threads} \
+        -1 {input.hr1} -2 {input.hr2} -s {input.hr3} \
+        -o {output.dir} 2> {log}
         """

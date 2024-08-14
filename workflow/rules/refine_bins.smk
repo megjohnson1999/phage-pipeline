@@ -16,7 +16,7 @@ rule dastool:
         """
         touch {output}
         
-        DAS_Tool --threads {threads} --write_bins --write_unbinned \
+        DAS_Tool --threads {threads} --write_bins \
         -i {input.concoct_tsv},{input.maxbin_tsv},{input.metabat_tsv} \
         -l concoct,maxbin,metabat -c {input.contigs_filt} \
         -o {config[outdir]}/{wildcards.sample}/binning/dastool/{wildcards.sample} \

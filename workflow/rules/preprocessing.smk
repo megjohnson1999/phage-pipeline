@@ -35,12 +35,13 @@ rule host_removal:
         tr2 = os.path.join(config["reads"], "{sample}_2_trimmed.fastq.gz"),
         db_done = "ref/db_done"
     params:
-        db = config["host_database"]
+        db = config["human_ref"]
     threads: 16
-    conda: "../envs/bowtie2.yaml"
+    conda: "../envs/minimap_env.yaml"
     output:
         hr1 = os.path.join(config["reads"], "host_removed", "{sample}_1_hr.fastq.gz"),
         hr2 = os.path.join(config["reads"], "host_removed", "{sample}_2_hr.fastq.gz"),
+        hr3 = os.path.join(config["reads"], "host_removed", "{sample}_unpaired_hr.fastq.gz")
     log:
         os.path.join(config["outdir"], "logs", "host_removal", "{sample}.log")
     benchmark:
@@ -48,10 +49,15 @@ rule host_removal:
     shell:
         """
         mkdir -p {config[reads]}/host_removed
-        bowtie2 -p {threads} -x {params.db} -1 {input.tr1} -2 {input.tr2} \
-        --very-sensitive-local \
-        --un-conc-gz {config[reads]}/host_removed/{wildcards.sample} \
-        2> {log}
-        mv {config[reads]}/host_removed/{wildcards.sample}.1 {output.hr1}
-        mv {config[reads]}/host_removed/{wildcards.sample}.2 {output.hr2}
+        minimap2 -ax sr {params.db} {input.tr1} {input.tr2} \
+        | samtools view -bh \
+        | samtools sort -o {config[reads]}/host_removed/{wildcards.sample}_output.bam
+        samtools index {config[reads]}/host_removed/{wildcards.sample}_output.bam
+        # Use samtools to get the reads that didn't map to host
+        samtools fastq -F 3584 -f 77 {config[reads]}/host_removed/{wildcards.sample}_output.bam  \
+        | gzip -c > {output.hr1}
+        samtools fastq -F 3584 -f 141 {config[reads]}/host_removed/{wildcards.sample}_output.bam \
+        | gzip -c > {output.hr2}
+        samtools fastq -f 4 -F 1 {config[reads]}/host_removed/{wildcards.sample}_output.bam \
+        | gzip -c > {output.hr3}
         """

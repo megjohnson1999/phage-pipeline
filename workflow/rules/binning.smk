@@ -4,7 +4,7 @@ rule binning_prep:
         hr2 = os.path.join(config["reads"], "host_removed", "{sample}_2_hr.fastq.gz"),
         contigs = os.path.join(config["outdir"], "{sample}", "assembly", "contigs.fasta")
     threads: 12
-    conda: "../envs/bowtie2.yaml"
+    conda: "../envs/minimap_env.yaml"
     output:
         contigs_filt = os.path.join(config["outdir"], "{sample}", "assembly", "contigs_filt_1000bp.fasta"),
         sam = os.path.join(config["outdir"], "{sample}", "binning", "map_reads", "{sample}.sam"),
