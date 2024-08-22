@@ -3,6 +3,8 @@ rule fastp:
     input:
         r1 = os.path.join(config["reads"],"{sample}_1.fastq.gz"),
         r2 = os.path.join(config["reads"],"{sample}_2.fastq.gz"),
+    params:
+        l = config["fastp_min_sequence_length"]
     conda: "../envs/fastp_test.yaml"
     output:
         tr1 = os.path.join(config["reads"], "{sample}_1_trimmed.fastq.gz"),
@@ -12,7 +14,7 @@ rule fastp:
     benchmark:
         os.path.join(config["outdir"], "benchmarks", "fastp", "{sample}_bmrk.txt")
     shell:
-        "fastp -i {input.r1} -I {input.r2} -o {output.tr1} -O {output.tr2} 2> {log}"
+        "fastp -l {params.l} -i {input.r1} -I {input.r2} -o {output.tr1} -O {output.tr2} 2> {log}"
 
 # Get database for host removal step
 rule get_db:
