@@ -4,7 +4,7 @@ rule rename_contigs:
     output:
         os.path.join(config["outdir"], "{sample}", "binning", "renamed_final_filtered_contigs.fasta")
     shell:
-        "sed "s/^>/>{wildcards.sample}_/" {input} > {output}"
+        'sed "s/^>/>{wildcards.sample}_/" {input} > {output}'
 
 rule concatenate_contigs:
     input:
@@ -12,7 +12,7 @@ rule concatenate_contigs:
     output:
         os.path.join(config["outdir"], "concatenated_contigs.fasta")
     shell:
-        "cat {input} > {output}"
+        'cat {input} > {output}'
 
 rule cluster_and_derep:
     input:
@@ -22,15 +22,23 @@ rule cluster_and_derep:
     output:
         os.path.join(config["outdir"], "dereplicated_contigs.fasta")
     shell:
-        "cd-hit-est -i {input} -o {output} -c 0.97 -n 5"
+        "cd-hit-est -i {input} -o {output} -c 0.95 -n 10 -T {threads}"
 
 rule coverm_mapping:
     input:
-        hr1 = 
-        hr2 = 
+        hr1 = os.path.join(config["reads"], "host_removed", "{sample}_1_hr.fastq.gz"),
+        hr2 = os.path.join(config["reads"], "host_removed", "{sample}_2_hr.fastq.gz"),
         contigs = os.path.join(config["outdir"], "dereplicated_contigs.fasta")
     threads: 24
     conda: "../envs/coverm_env.yaml"
     output:
         directory(os.path.join(config["outdir"], "{sample}", "coverm"))
     shell:
+        """
+        mkdir -p {output}
+
+        coverm contig -1 {input.hr1} -2 {input.hr2} -r {input.contigs} \
+        --mapper minimap2-sr --threads {threads} \
+        --methods rpkm count variance mean covered_fraction covered_bases \
+        > {output}/{wildcards.sample}_stats.txt
+        """
