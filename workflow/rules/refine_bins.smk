@@ -16,7 +16,7 @@ rule dastool:
         """
         touch {output}
         
-        DAS_Tool --threads {threads} --write_bins \
+        DAS_Tool --threads {threads} --write_bins --write_unbinned \
         -i {input.concoct_tsv},{input.maxbin_tsv},{input.metabat_tsv} \
         -l concoct,maxbin,metabat -c {input.contigs_filt} \
         -o {config[outdir]}/{wildcards.sample}/binning/dastool/{wildcards.sample} \
@@ -28,7 +28,7 @@ rule filter_unbinned:
     input:
         contigs_filt = os.path.join(config["outdir"], "{sample}", "assembly", "contigs_filt_1000bp.fasta"),
         dastool = os.path.join(config["outdir"], "{sample}", "binning", "done")
-    conda: "../envs/bowtie2.yaml"
+    conda: "../envs/minimap_env.yaml" 
     output:
         final_contigs = os.path.join(config["outdir"], "{sample}", "binning", "final_filtered_contigs.fasta"),
         unbinned_4000bp = os.path.join(config["outdir"], "{sample}", "binning","filt_4000_seqs_to_keep.fasta"),
@@ -36,11 +36,11 @@ rule filter_unbinned:
     shell:
         """
         # Extract the unbinned sequences >=4000bp
-        cat {config[outdir]}/{wildcards.sample}/binning/dastool/unbinned.fa \
+        cat {config[outdir]}/{wildcards.sample}/binning/dastool/{wildcards.sample}_DASTool_bins/unbinned.fa \
         | seqkit seq -m 4000 > {output.unbinned_4000bp}
 
         # Extract the IDs of the unbinned sequences <4000bp
-        cat {config[outdir]}/{wildcards.sample}/binning/dastool/unbinned.fa \
+        cat {config[outdir]}/{wildcards.sample}/binning/dastool/{wildcards.sample}_DASTool_bins/unbinned.fa \
         | seqkit seq -n -M 3999 \
         > {config[outdir]}/{wildcards.sample}/binning/filt_4000_seqs_to_discard.txt
 
@@ -53,7 +53,7 @@ rule filter_unbinned:
 
         # Filter contigs for phispy input (5000bp filter)
         cat {output.final_contigs} | seqkit seq -m 5000 > {output.contigs_5000bp}
-        """
+        """  
 
 rule separate_unbinned:
     input: 
@@ -63,21 +63,25 @@ rule separate_unbinned:
         os.path.join(config["outdir"], "{sample}", "binning", "dastool", "{sample}.bins")
     shell:
         """
-        mkdir -p {output}
+        touch {output}
         cd {config[outdir]}/{wildcards.sample}/binning
-        cat filt_4000_seqs_to_keep.fasta \
-        | awk '{\
-        if (substr($0, 1, 1)==">") {filename=(substr($0,2) ".fa")}
-        print $0 >> filename
-        close(filename)
-        }'
+
+        cat filt_4000_seqs_to_keep.fasta | awk '
+        {{
+            if (substr($0, 1, 1) == ">") {{ 
+                filename = (substr($0, 2) ".fa") 
+            }}
+            print $0 >> filename
+            close(filename)
+        }}'
+
         mv NODE* dastool/{wildcards.sample}_DASTool_bins
         cd ../../../..
         """
 
 rule checkm:
     input:
-        os.path.join(config["outdir"], "{sample}", "binning", "graphbin")
+        os.path.join(config["outdir"], "{sample}", "binning", "dastool", "{sample}.bins")
     threads: 24
     conda: "../envs/checkm_env.yaml"
     output:
@@ -89,6 +93,7 @@ rule checkm:
     shell:
         """
         mkdir -p {output}
-        checkm lineage_wf -x fa {input}/{wildcards.sample}_DASTool_bins/ \
+        checkm lineage_wf -x fa \
+        {config[outdir]}/{wildcards.sample}/binning/dastool/{wildcards.sample}_DASTool_bins/ \
         {output}/ -t {threads} --tab_table -f {output}/checkm_out.tsv 2> {log}
         """ 
