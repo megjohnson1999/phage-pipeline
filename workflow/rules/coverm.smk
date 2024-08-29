@@ -2,15 +2,17 @@ rule rename_contigs:
     input:
         os.path.join(config["outdir"], "{sample}", "binning", "dastool", "{sample}_DASTool_bins")
     output:
-        directory(os.path.join(config["outdir"], "all_bins"))
+        os.path.join(config["outdir"], "all_bins", {sample})
     shell:
         """
-        mkdir -p {output}
+        mkdir -p {config[outdir]}
 
         for file in {input}
         do
-        sed "s/^>/>{wildcards.sample}_/" $file > {output}/{wildcards.sample}_"$file"
+        sed "s/^>/>{wildcards.sample}_/" $file > {output}_"$file"
         done
+
+        touch {output}
         """
         
 rule coverm_cluster:
