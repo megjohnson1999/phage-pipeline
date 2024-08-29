@@ -15,8 +15,7 @@ rule rename_contigs:
         
 rule coverm_cluster:
     input:
-        genomes = os.path.join(config["outdir"], "all_bins"),
-        checkm = os.path.join(config["outdir"], "{sample}", "binning", "checkm")
+        genomes = os.path.join(config["outdir"], "all_bins")
     threads: 24
     conda: "../envs/coverm_env.yaml"
     output:
