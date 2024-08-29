@@ -10,6 +10,7 @@ include: "rules/preprocessing.smk"
 include: "rules/assembly.smk"
 include: "rules/binning.smk"
 include: "rules/refine_bins.smk"
+include: "rules/coverm.smk"
 include: "rules/taxonomy.smk"
 include: "rules/phages.smk"
 
