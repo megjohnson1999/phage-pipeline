@@ -2,7 +2,7 @@ rule rename_contigs:
     input:
         os.path.join(config["outdir"], "{sample}", "binning", "dastool", "{sample}_DASTool_bins")
     output:
-        os.path.join(config["outdir"], "all_bins", {sample})
+        os.path.join(config["outdir"], "all_bins", "{sample}")
     shell:
         """
         mkdir -p {config[outdir]}
