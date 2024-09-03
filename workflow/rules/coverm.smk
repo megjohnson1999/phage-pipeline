@@ -2,14 +2,15 @@ rule rename_contigs:
     input:
         os.path.join(config["outdir"], "{sample}", "binning", "dastool", "{sample}_DASTool_bins")
     output:
-        os.path.join(config["outdir"], "all_bins", "{sample}")
+        dir = directory(os.path.join(config["outdir"], "all_bins")
+        samples = directory(os.path.join(config["outdir"], "all_bins", "{sample}"))
     shell:
         """
-        mkdir -p {config[outdir]}
+        mkdir -p {output.dir}
 
-        for file in {input}
+        for file in {input}/*
         do
-        sed "s/^>/>{wildcards.sample}_/" $file > {output}_"$file"
+        sed "s/^>/>{wildcards.sample}_/" $file > {output.samples}_$(basename $file)
         done
 
         touch {output}
@@ -17,7 +18,7 @@ rule rename_contigs:
         
 rule coverm_cluster:
     input:
-        genomes = os.path.join(config["outdir"], "all_bins", "{sample}")
+        os.path.join(config["outdir"], "all_bins")
     threads: 24
     conda: "../envs/coverm_env.yaml"
     output:
