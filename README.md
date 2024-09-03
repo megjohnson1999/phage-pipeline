@@ -26,3 +26,17 @@ cat_database: "/ref/sahlab/data/CAT_prepare_20210107"
 ## Example:
 
 snakemake --profile ../profile/slurm/ --config reads=/scratch/sahlab/Megan/test_reads outdir=/scratch/sahlab/Megan/pipeline_test_out
+
+## Outputs
+
+The output directory should have 5 subdirectories:
+
+assembly
+
+binning
+
+coverm
+
+taxonomy
+
+phage_analysis
