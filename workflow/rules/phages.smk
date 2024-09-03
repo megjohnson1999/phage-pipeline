@@ -69,7 +69,8 @@ rule phage_all:
         cat = os.path.join(config["outdir"], "{sample}", "taxonomy", "CAT"),
         checkm = os.path.join(config["outdir"], "{sample}", "binning", "checkm"),
         genomad = os.path.join(config["outdir"], "{sample}", "phage_analysis", "genomad"),
-        phispy = os.path.join(config["outdir"], "{sample}", "phage_analysis", "phispy")
+        phispy = os.path.join(config["outdir"], "{sample}", "phage_analysis", "phispy"),
+        coverm = os.path.join(config["outdir"], "{sample}", "coverm")
     output:
         os.path.join(config["outdir"], "{sample}", "phage_analysis", "done")
     shell:

@@ -10,10 +10,11 @@ include: "rules/preprocessing.smk"
 include: "rules/assembly.smk"
 include: "rules/binning.smk"
 include: "rules/refine_bins.smk"
+include: "rules/coverm.smk"
 include: "rules/taxonomy.smk"
 include: "rules/phages.smk"
 
 rule all:
     input:
-        expand(os.path.join(config["outdir"], "{sample}", "phage_analysis", "done"), sample = SAMPLES)
+        expand(os.path.join(os.path.join(config["outdir"], "{sample}", "phage_analysis", "done")), sample = SAMPLES)
     default_target: True
