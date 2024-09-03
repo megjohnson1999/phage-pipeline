@@ -1,5 +1,5 @@
 ## How to run:
-(requires Snakemake minimum version 8)
+(requires Snakemake version 8+)
 
 snakemake \
 --profile ../profile/slurm/ \
