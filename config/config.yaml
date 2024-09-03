@@ -3,8 +3,6 @@ outdir: "out"
 
 fastp_min_sequence_length: 120 
 human_ref: "/ref/sahlab/data/GRCh38.fna.gz"
-#host_database: "ref/hg37dec_v0.1"
 genomad_database: "/ref/sahlab/data/viral_analysis_DBs/genomad_DBs/genomad_db"
 bakta_database: "/ref/sahlab/data/bakta_db"
 cat_database: "/ref/sahlab/data/CAT_prepare_20210107"
-
