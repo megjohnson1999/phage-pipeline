@@ -1,31 +1,50 @@
 rule rename_contigs:
     input:
-        os.path.join(config["outdir"], "{sample}", "binning", "dastool", "{sample}_DASTool_bins")
+        os.path.join(config["outdir"], "{sample}", "binning", "dastool", "{sample}.bins")
     output:
-        dir = directory(os.path.join(config["outdir"], "all_bins")
-        samples = directory(os.path.join(config["outdir"], "all_bins", "{sample}"))
+        directory(os.path.join(config["outdir"], "all_bins", "{sample}"))
     shell:
         """
-        mkdir -p {output.dir}
+        mkdir -p {output}
+        files={config[outdir]}/{wildcards.sample}/binning/dastool/{wildcards.sample}_DASTool_bins/*
 
-        for file in {input}/*
+        for file in $files
         do
-        sed "s/^>/>{wildcards.sample}_/" $file > {output.samples}_$(basename $file)
+        echo $file
+        sed "s/^>/>{wildcards.sample}_/" $file \
+        > {output}/{wildcards.sample}_$(basename $file)
         done
-
-        touch {output}
         """
+
+rule move_files:
+    input:
+        expand(os.path.join(config["outdir"], "all_bins", "{sample}"), sample=SAMPLES)
+    output:
+        directory(os.path.join(config["outdir"], "all_bins", "all_samples"))
+    shell:
+        """
+        mkdir -p {output}
+
+        for dir in {input}
+        do
+        if [ -d "$dir" ]; then
+        mv "$dir"/* {output}
+        fi
+        done
+        """
+
         
 rule coverm_cluster:
     input:
-        os.path.join(config["outdir"], "all_bins")
+        os.path.join(config["outdir"], "all_bins", "all_samples")
     threads: 24
     conda: "../envs/coverm_env.yaml"
     output:
         directory(os.path.join(config["outdir"], "all_bins_clustered"))
     shell:
         """
-        coverm cluster -d {input} \
+        coverm cluster --genome-fasta-directory {input} \
+        -x .fa \
         --output-representative-fasta-directory-copy {output} \
         --threads {threads}
 
