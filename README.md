@@ -1,6 +1,8 @@
 ## How to run:
 (requires Snakemake version 8+)
 
+cd workflow
+
 snakemake \
 --profile ../profile/slurm/ \
 --config [options]
