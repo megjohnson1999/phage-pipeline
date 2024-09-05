@@ -71,8 +71,8 @@ rule phage_all:
     conda: "../envs/phage_all_env.yaml"
     output:
         os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage_table.tsv")
-    shell:
-        "Rscript scripts/merge_prophages.R"
+    script:
+        "../scripts/merge_prophages.R"
 
 rule run_everything:
     input:
