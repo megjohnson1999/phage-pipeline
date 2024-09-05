@@ -8,7 +8,7 @@ snakemake \
 --config [options]
 
 
-## options:
+## Options:
 
 reads: specify path to directory where paired-end fastq reads are
 
