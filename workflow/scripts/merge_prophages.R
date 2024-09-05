@@ -66,9 +66,18 @@ for (c in shared_contigs){
 }
 
 
-# Merge genomad and phispy tables
+# Get taxonomy output in the right format
+CAT_path <- file.path(snakemake@input[["CAT"]],
+                         "contig.taxonomy")
+CAT <- read_tsv(CAT_path) %>%
+  separate_wider_delim('# contig', '_', names=c('Node', 'contig', 'x', 'length_c', 'y', 'cov')) %>%  
+  as.data.frame() %>%
+  select(contig, superkingdom:species)
+
+# Merge the tables
 final_prophage_table <- rbind(genomad, phispy_unique) %>%
   mutate(contig = as.numeric(contig)) %>%
-  arrange(contig)
+  arrange(contig) %>%
+  merge(CAT, by='contig')
   
 write.table(final_prophage_table, snakemake@output[[1]], row.names=FALSE, sep="\t", quote=FALSE)
