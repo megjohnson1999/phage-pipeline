@@ -33,5 +33,7 @@ set-resources:
         mem: 50G
     cat:
         mem: 150G
+    coverm_mapping:
+        mem: 50G
 
         
