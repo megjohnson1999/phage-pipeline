@@ -28,7 +28,7 @@ set-resources:
         cpus_per_task: 12
         time: 400 
     genomad:
-        mem: 200G
+        mem: 50G
     checkm:
         mem: 50G
     cat:
