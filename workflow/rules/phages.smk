@@ -67,7 +67,8 @@ rule phispy:
 rule phage_all:
     input:
         genomad = os.path.join(config["outdir"], "{sample}", "phage_analysis", "genomad"),
-        phispy = os.path.join(config["outdir"], "{sample}", "phage_analysis", "phispy")
+        phispy = os.path.join(config["outdir"], "{sample}", "phage_analysis", "phispy"),
+        CAT = os.path.join(config["outdir"], "{sample}", "taxonomy", "CAT")
     conda: "../envs/phage_all_env.yaml"
     output:
         os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage_table.tsv")
