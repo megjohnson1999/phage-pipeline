@@ -66,11 +66,19 @@ rule phispy:
 
 rule phage_all:
     input:
+        genomad = os.path.join(config["outdir"], "{sample}", "phage_analysis", "genomad"),
+        phispy = os.path.join(config["outdir"], "{sample}", "phage_analysis", "phispy")
+    conda: "../envs/phage_all_env.yaml"
+    output:
+        os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage_table.tsv")
+    shell:
+        "Rscript scripts/merge_prophages.R"
+
+rule run_everything:
+    input:
         cat = os.path.join(config["outdir"], "{sample}", "taxonomy", "CAT"),
         checkm = os.path.join(config["outdir"], "{sample}", "binning", "checkm"),
-        genomad = os.path.join(config["outdir"], "{sample}", "phage_analysis", "genomad"),
-        phispy = os.path.join(config["outdir"], "{sample}", "phage_analysis", "phispy"),
-        coverm = os.path.join(config["outdir"], "{sample}", "coverm")
+        prophage = os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage_table.tsv")
     output:
         os.path.join(config["outdir"], "{sample}", "phage_analysis", "done")
     shell:
