@@ -1,5 +1,6 @@
 library(readr)
 library(tidyverse)
+library(Biostrings)
 
 # Function to check if 2 regions overlap
 check_overlap <- function(region1, region2) {
@@ -23,12 +24,26 @@ genomad <- read_tsv(genomad_path) %>%
 phispy_path <- file.path(snakemake@input[["phispy"]],
                          "prophage.tsv") 
 phispy <- read_tsv(phispy_path) %>%
+  separate_wider_delim('Prophage number', '_', names=c('pp', 'pp_number')) %>%
   separate_wider_delim(Contig, '_', names=c('Node', 'contig')) %>%
-  as.data.frame() %>%
-  select(contig, Start, Stop) %>%
-  rename(start = Start,
-         end = Stop) %>%
+  as.data.frame()
+
+# Debugging: print column names after separation
+print("Column names in phispy after separation:")
+print(colnames(phispy))
+
+# Ensure columns 'Start' and 'Stop' exist before renaming
+if (!all(c('Start', 'Stop') %in% colnames(phispy))) {
+  stop("Columns 'Start' and 'Stop' not found in phispy data after separation.")
+  }
+
+phispy <- phispy %>%
+  dplyr::rename(start = Start, end = Stop) %>%
   mutate(tool = "phispy")
+
+# Debugging: Print column names after renaming
+print("Column names in phispy after renaming:")
+print(colnames(phispy))
 
 # Set up empty data frame to hold unique-to-phispy prophages
 phispy_unique <- data.frame(matrix(ncol=4, nrow=0))
@@ -66,6 +81,17 @@ for (c in shared_contigs){
 }
 
 
+# Get fasta file of unique-to-phispy contigs
+pp_num <- as.numeric(phispy_unique$pp_number)
+fasta <- readDNAStringSet(file.path(snakemake@input[["phispy"]], 
+                                          "phage.fasta"))
+fasta_unique <- fasta[pp_num]
+writeXStringSet(fasta_unique, filepath=snakemake@output[["fasta"]])
+
+
+phispy_unique <- phispy_unique %>%
+  select(contig, start, end, tool)
+
 # Get taxonomy output in the right format
 CAT_path <- file.path(snakemake@input[["CAT"]],
                          "contig.taxonomy")
@@ -75,9 +101,11 @@ CAT <- read_tsv(CAT_path) %>%
   select(contig, superkingdom:species)
 
 # Merge the tables
-final_prophage_table <- rbind(genomad, phispy_unique) %>%
+final_prophage_table <- rbind(genomad, phispy_unique)
+
+final_prophage_table_tax <- rbind(genomad, phispy_unique) %>%
   mutate(contig = as.numeric(contig)) %>%
-  arrange(contig) %>%
   merge(CAT, by='contig')
   
-write.table(final_prophage_table, snakemake@output[[1]], row.names=FALSE, sep="\t", quote=FALSE)
+write.table(final_prophage_table, snakemake@output[["table"]], row.names=FALSE, sep="\t", quote=FALSE)
+write.table(final_prophage_table_tax, snakemake@output[["table_with_taxonomy"]], row.names=FALSE, sep="\t", quote=FALSE)

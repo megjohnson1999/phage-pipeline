@@ -1,8 +1,13 @@
 name: phage_all
 channels:
-  - defaults
   - conda-forge
+  - bioconda
+  - defaults
 dependencies:
-  - r-base=4
+  - r-base=4.1
   - r-tidyverse
   - r-readr
+  - bioconductor-biostrings=2.62.0
+  - bioconductor-xvector=0.34.0
+  - bioconductor-zlibbioc=1.40.0
+  - r-essentials
