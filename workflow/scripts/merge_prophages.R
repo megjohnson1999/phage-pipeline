@@ -1,5 +1,6 @@
 library(readr)
 library(tidyverse)
+library(Biostrings)
 
 # Function to check if 2 regions overlap
 check_overlap <- function(region1, region2) {
@@ -23,9 +24,9 @@ genomad <- read_tsv(genomad_path) %>%
 phispy_path <- file.path(snakemake@input[["phispy"]],
                          "prophage.tsv") 
 phispy <- read_tsv(phispy_path) %>%
+  separate_wider_delim('Prophage number', '_', names=c('pp', 'pp_number')) %>%
   separate_wider_delim(Contig, '_', names=c('Node', 'contig')) %>%
   as.data.frame() %>%
-  select(contig, Start, Stop) %>%
   rename(start = Start,
          end = Stop) %>%
   mutate(tool = "phispy")
@@ -66,6 +67,17 @@ for (c in shared_contigs){
 }
 
 
+# Get pp_number for unique-to-phispy contigs
+pp_num <- as.numeric(phispy_unique$pp_number)
+fasta <- readDNAStringSet(file.path(snakemake@input[["phispy"]], 
+                                          "phage.fasta"))
+fasta_unique <- fasta[pp_num]
+writeXStringSet(fasta_unique, filepath = snakemake@output[["fasta"]])
+
+
+phispy_unique <- phispy_unique %>%
+  select(contig, start, end, tool)
+
 # Get taxonomy output in the right format
 CAT_path <- file.path(snakemake@input[["CAT"]],
                          "contig.taxonomy")
@@ -80,4 +92,4 @@ final_prophage_table <- rbind(genomad, phispy_unique) %>%
   arrange(contig) %>%
   merge(CAT, by='contig')
   
-write.table(final_prophage_table, snakemake@output[[1]], row.names=FALSE, sep="\t", quote=FALSE)
+write.table(final_prophage_table, snakemake@output[["table"]], row.names=FALSE, sep="\t", quote=FALSE)
