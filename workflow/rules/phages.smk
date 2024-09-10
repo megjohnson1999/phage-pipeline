@@ -71,16 +71,31 @@ rule phage_all:
         CAT = os.path.join(config["outdir"], "{sample}", "taxonomy", "CAT")
     conda: "../envs/phage_all_env.yaml"
     output:
-        fasta = os.path.join(config["outdir"], "{sample}", "phage_analysis", "unique_phispy.fasta")
+        fasta = os.path.join(config["outdir"], "{sample}", "phage_analysis", "unique_phispy_prophage.fasta")
         table = os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage_table.tsv")
     script:
         "../scripts/merge_prophages.R"
+
+rule final_prophage_output:
+    input:
+        genomad = os.path.join(config["outdir"], "{sample}", "phage_analysis", "genomad"),
+        unique_phispy = os.path.join(config["outdir"], "{sample}", "phage_analysis", "unique_phispy_prophage.fasta")
+    output:
+        os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage.fasta")
+    shell:
+        """
+        cp {input.genomad}/final_filtered_contigs_find_proviruses/final_filtered_contigs_provirus.fna \
+        {config[outdir]}/{wildcards.sample}/phage_analysis/genomad_prophage.fasta
+
+        cat {input.genomad}/final_filtered_contigs_find_proviruses/final_filtered_contigs_provirus.fna \
+        {input.unique_phispy} > {output}
+        """
 
 rule run_everything:
     input:
         cat = os.path.join(config["outdir"], "{sample}", "taxonomy", "CAT"),
         checkm = os.path.join(config["outdir"], "{sample}", "binning", "checkm"),
-        prophage = os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage_table.tsv")
+        prophage = os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage.fasta")
     output:
         os.path.join(config["outdir"], "{sample}", "phage_analysis", "done")
     shell:
