@@ -94,7 +94,7 @@ rule final_prophage_output:
 
 rule run_everything:
     input:
-        cat = os.path.join(config["outdir"], "{sample}", "taxonomy", "CAT"),
+        coverm = os.path.join(config["outdir"], "{sample}", "coverm"),
         checkm = os.path.join(config["outdir"], "{sample}", "binning", "checkm"),
         prophage = os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage.fasta")
     output:
