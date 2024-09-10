@@ -6,3 +6,4 @@ dependencies:
   - r-base=4
   - r-tidyverse
   - r-readr
+  - r-bioconductor-biostrings
