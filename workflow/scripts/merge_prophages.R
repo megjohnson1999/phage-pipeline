@@ -67,12 +67,12 @@ for (c in shared_contigs){
 }
 
 
-# Get pp_number for unique-to-phispy contigs
+# Get fasta file of unique-to-phispy contigs
 pp_num <- as.numeric(phispy_unique$pp_number)
 fasta <- readDNAStringSet(file.path(snakemake@input[["phispy"]], 
                                           "phage.fasta"))
 fasta_unique <- fasta[pp_num]
-writeXStringSet(fasta_unique, filepath = snakemake@output[["fasta"]])
+writeXStringSet(fasta_unique, filepath=snakemake@output[["fasta"]])
 
 
 phispy_unique <- phispy_unique %>%
@@ -89,7 +89,6 @@ CAT <- read_tsv(CAT_path) %>%
 # Merge the tables
 final_prophage_table <- rbind(genomad, phispy_unique) %>%
   mutate(contig = as.numeric(contig)) %>%
-  arrange(contig) %>%
   merge(CAT, by='contig')
   
 write.table(final_prophage_table, snakemake@output[["table"]], row.names=FALSE, sep="\t", quote=FALSE)
