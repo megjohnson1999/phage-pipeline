@@ -71,8 +71,9 @@ rule phage_all:
         CAT = os.path.join(config["outdir"], "{sample}", "taxonomy", "CAT")
     conda: "../envs/phage_all_env.yaml"
     output:
-        fasta = os.path.join(config["outdir"], "{sample}", "phage_analysis", "unique_phispy_prophage.fasta")
-        table = os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage_table.tsv")
+        fasta = os.path.join(config["outdir"], "{sample}", "phage_analysis", "unique_phispy_prophage.fasta"),
+        table = os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage_table.tsv"),
+        table_with_taxonomy = os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage_table_with_taxonomy.tsv")
     script:
         "../scripts/merge_prophages.R"
 
