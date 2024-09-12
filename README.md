@@ -31,7 +31,7 @@ cat_database: "/ref/sahlab/data/CAT_prepare_20210107"
 checkv_database: "/ref/sahlab/data/viral_analysis_DBs/checkV_DB/checkv-db-v1.4"
 
 
-## Example command:
+### Example command:
 
 snakemake --profile ../profile/slurm/ --config reads=/scratch/sahlab/Megan/test_reads outdir=/scratch/sahlab/Megan/pipeline_test_out
 
