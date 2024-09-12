@@ -1,4 +1,8 @@
-## How to run:
+
+![updated_workflow_091024 drawio](https://github.com/user-attachments/assets/4f59c6d9-a453-4985-a11e-f8eed6714539)
+
+
+# How to run:
 (requires Snakemake version 8+)
 
 cd workflow
@@ -8,7 +12,7 @@ snakemake \
 --config [options]
 
 
-## Options:
+# Options:
 
 reads: specify path to directory where paired-end fastq reads are
 
@@ -25,11 +29,12 @@ bakta_database: "/ref/sahlab/data/bakta_db"
 cat_database: "/ref/sahlab/data/CAT_prepare_20210107"
 
 
-## Example:
+# Example:
 
 snakemake --profile ../profile/slurm/ --config reads=/scratch/sahlab/Megan/test_reads outdir=/scratch/sahlab/Megan/pipeline_test_out
 
-## Outputs
+
+# Outputs:
 
 The output directory should contain separate directories for each sample. Each sample's directory should have 5 subdirectories:
 
