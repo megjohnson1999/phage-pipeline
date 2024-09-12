@@ -109,6 +109,10 @@ rule checkv:
     conda: "../envs/checkv_env.yaml"
     output:
         directory(os.path.join(config["outdir"], "{sample}", "phage_analysis", "checkv"))
+    log:
+        os.path.join(config["outdir"], "logs", "checkv", "{sample}.log")
+    benchmark:
+        os.path.join(config["outdir"], "benchmarks", "checkv", "{sample}_bmrk.txt")
     shell:
         """
         checkv end_to_end \
