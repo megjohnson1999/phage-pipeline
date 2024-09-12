@@ -16,9 +16,24 @@ rule rename_contigs:
         done
         """
 
+rule verify_no_duplicate_names:
+    input:
+        os.path.join(config["outdir"], "all_bins", "{sample}")
+    output:
+        os.path.join(config["outdir"], "all_bins", "{sample}", "no_duplicates")
+    shell:
+        """
+        for fasta in {input}/*.fa; do
+            if grep -o '^>' $fasta | sort | uniq -d | grep -q '^>'; then
+                exit 1
+            fi
+        done
+        touch {output}
+        """
+
 rule move_files:
     input:
-        expand(os.path.join(config["outdir"], "all_bins", "{sample}"), sample=SAMPLES)
+        expand(os.path.join(config["outdir"], "all_bins", "{sample}", "no_duplicates"), sample=SAMPLES)
     output:
         directory(os.path.join(config["outdir"], "all_bins", "all_samples"))
     shell:
