@@ -35,5 +35,5 @@ set-resources:
         mem: 150G
     coverm_mapping:
         mem: 50G
-
-        
+    checkv:
+        mem: 50G
