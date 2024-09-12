@@ -41,6 +41,10 @@ rule coverm_cluster:
     conda: "../envs/coverm_env.yaml"
     output:
         directory(os.path.join(config["outdir"], "all_bins_clustered"))
+    log:
+        os.path.join(config["outdir"], "logs", "coverm_cluster.log")
+    benchmark:
+        os.path.join(config["outdir"], "benchmarks", "coverm_cluster_bmrk.txt")
     shell:
         """
         coverm cluster --genome-fasta-directory {input} \
