@@ -31,7 +31,7 @@ snakemake --profile ../profile/slurm/ --config reads=/scratch/sahlab/Megan/test_
 
 ## Outputs
 
-The output directory should have 5 subdirectories:
+The output directory should contain separate directories for each sample. Each sample's directory should have 5 subdirectories:
 
 assembly
 
@@ -42,3 +42,12 @@ coverm
 taxonomy
 
 phage_analysis
+
+### In the phage_analysis directory:
+
+final_prophage_table.tsv: has the prophages (contigs and start/stop coordinates)
+
+final_prophage_table_with_taxonomy.tsv: has the prophages + taxonomy info (contigs, start/stop coordinates, and taxonomy assigned to that contig)
+
+final_prophage.fasta: has the sequences of all the final prophage regions
+
