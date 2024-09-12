@@ -7,9 +7,7 @@
 
 cd workflow
 
-snakemake \
---profile ../profile/slurm/ \
---config [options]
+snakemake --profile ../profile/slurm/ --config [options]
 
 
 # Options:
