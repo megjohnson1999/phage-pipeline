@@ -12,21 +12,21 @@ snakemake --profile ../profile/slurm/ --config [options]
 
 # Options:
 
-reads: specify path to directory where paired-end fastq reads are (with suffixes _1.fastq.gz and _2.fastq.gz)
+ - reads: specify path to directory where paired-end fastq reads are (with suffixes _1.fastq.gz and _2.fastq.gz)
 
-outdir: specify path to directory where all outputs will be created
+ - outdir: specify path to directory where all outputs will be created
 
-fastp_min_sequence_length: length threshold (in bp) for fastp step (default is 120)
+ - fastp_min_sequence_length: length threshold (in bp) for fastp step (default is 120)
 
-human_ref: "/ref/sahlab/data/GRCh38.fna.gz"
+ - human_ref: "/ref/sahlab/data/GRCh38.fna.gz"
 
-genomad_database: "/ref/sahlab/data/viral_analysis_DBs/genomad_DBs/genomad_db"
+ - genomad_database: "/ref/sahlab/data/viral_analysis_DBs/genomad_DBs/genomad_db"
 
-bakta_database: "/ref/sahlab/data/bakta_db"
+ - bakta_database: "/ref/sahlab/data/bakta_db"
 
-cat_database: "/ref/sahlab/data/CAT_prepare_20210107"
+ - cat_database: "/ref/sahlab/data/CAT_prepare_20210107"
 
-checkv_database: "/ref/sahlab/data/viral_analysis_DBs/checkV_DB/checkv-db-v1.4"
+ - checkv_database: "/ref/sahlab/data/viral_analysis_DBs/checkV_DB/checkv-db-v1.4"
 
 
 ### Example command:
@@ -38,21 +38,21 @@ snakemake --profile ../profile/slurm/ --config reads=/scratch/sahlab/Megan/test_
 
 The output directory should contain separate directories for each sample. Each sample's directory should have 5 subdirectories:
 
-assembly
+ - assembly
 
-binning
+ - binning
 
-coverm
+ - coverm
 
-taxonomy
+ - taxonomy
 
-phage_analysis
+ - phage_analysis
 
 ### In the phage_analysis directory:
 
-final_prophage_table.tsv: has the prophages (contigs and start/stop coordinates)
+ - final_prophage_table.tsv: has the prophages (contigs and start/stop coordinates)
 
-final_prophage_table_with_taxonomy.tsv: has the prophages + taxonomy info (contigs, start/stop coordinates, and taxonomy assigned to that contig)
+ - final_prophage_table_with_taxonomy.tsv: has the prophages + taxonomy info (contigs, start/stop coordinates, and taxonomy assigned to that contig)
 
-final_prophage.fasta: has the sequences of all the final prophage regions
+ - final_prophage.fasta: has the sequences of all the final prophage regions
 
