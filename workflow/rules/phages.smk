@@ -92,10 +92,40 @@ rule final_prophage_output:
         {input.unique_phispy} > {output}
         """
 
+rule checkv_db:
+    output:
+        directory(config["checkv_database"])
+    conda: "../envs/checkv_env.yaml"
+    shell:
+        """
+        checkv download_database {output}
+        """    
+
+rule checkv:
+    input:
+        fasta = os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage.fasta"),
+        db = config["checkv_database"]
+    threads: 24
+    conda: "../envs/checkv_env.yaml"
+    output:
+        directory(os.path.join(config["outdir"], "{sample}", "phage_analysis", "checkv"))
+    log:
+        os.path.join(config["outdir"], "logs", "checkv", "{sample}.log")
+    benchmark:
+        os.path.join(config["outdir"], "benchmarks", "checkv", "{sample}_bmrk.txt")
+    shell:
+        """
+        checkv end_to_end \
+        {input.fasta} {output} \
+        -t {threads} \
+        -d {input.db}
+        """
+
 rule run_everything:
     input:
-        cat = os.path.join(config["outdir"], "{sample}", "taxonomy", "CAT"),
+        coverm = os.path.join(config["outdir"], "{sample}", "coverm"),
         checkm = os.path.join(config["outdir"], "{sample}", "binning", "checkm"),
+        checkv = os.path.join(config["outdir"], "{sample}", "phage_analysis", "checkv"),
         prophage = os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage.fasta")
     output:
         os.path.join(config["outdir"], "{sample}", "phage_analysis", "done")
