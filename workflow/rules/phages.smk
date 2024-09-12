@@ -103,7 +103,7 @@ rule checkv_db:
 
 rule checkv:
     input:
-        fasta = os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage.fasta")
+        fasta = os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage.fasta"),
         db = config["checkv_database"]
     threads: 24
     conda: "../envs/checkv_env.yaml"
@@ -119,7 +119,7 @@ rule checkv:
 
 rule run_everything:
     input:
-        cat = os.path.join(config["outdir"], "{sample}", "taxonomy", "CAT"),
+        coverm = os.path.join(config["outdir"], "{sample}", "coverm"),
         checkm = os.path.join(config["outdir"], "{sample}", "binning", "checkm"),
         checkv = os.path.join(config["outdir"], "{sample}", "phage_analysis", "checkv"),
         prophage = os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage.fasta")
