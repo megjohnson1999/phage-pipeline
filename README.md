@@ -28,6 +28,8 @@ bakta_database: "/ref/sahlab/data/bakta_db"
 
 cat_database: "/ref/sahlab/data/CAT_prepare_20210107"
 
+checkv_database: "/ref/sahlab/data/viral_analysis_DBs/checkV_DB/checkv-db-v1.4"
+
 
 ## Example command:
 
