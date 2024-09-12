@@ -121,6 +121,7 @@ rule run_everything:
     input:
         cat = os.path.join(config["outdir"], "{sample}", "taxonomy", "CAT"),
         checkm = os.path.join(config["outdir"], "{sample}", "binning", "checkm"),
+        checkv = os.path.join(config["outdir"], "{sample}", "phage_analysis", "checkv"),
         prophage = os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage.fasta")
     output:
         os.path.join(config["outdir"], "{sample}", "phage_analysis", "done")
