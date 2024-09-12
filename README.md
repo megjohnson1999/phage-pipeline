@@ -12,7 +12,7 @@ snakemake --profile ../profile/slurm/ --config [options]
 
 # Options:
 
-reads: specify path to directory where paired-end fastq reads are
+reads: specify path to directory where paired-end fastq reads are (with suffixes _1.fastq.gz and _2.fastq.gz)
 
 outdir: specify path to directory where all outputs will be created
 
