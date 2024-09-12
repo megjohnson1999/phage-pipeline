@@ -4,4 +4,5 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - checkv=1.0.1
+  - checkv=1.0.3
+  - diamond<=2.1.8
