@@ -20,9 +20,11 @@ rule verify_no_duplicate_names:
     input:
         os.path.join(config["outdir"], "all_bins", "{sample}")
     output:
-        os.path.join(config["outdir"], "all_bins", "{sample}", "no_duplicates")
+        os.path.join(config["outdir"], "verify_unique", "{sample}_no_duplicates")
     shell:
         """
+        mkdir -p {config[outdir]}/verify_unique
+        
         for fasta in {input}/*.fa; do
             if grep -o '^>' $fasta | sort | uniq -d | grep -q '^>'; then
                 exit 1
@@ -33,7 +35,7 @@ rule verify_no_duplicate_names:
 
 rule move_files:
     input:
-        expand(os.path.join(config["outdir"], "all_bins", "{sample}", "no_duplicates"), sample=SAMPLES)
+        expand(os.path.join(config["outdir"], "verify_unique", "{sample}_no_duplicates"), sample=SAMPLES)
     output:
         directory(os.path.join(config["outdir"], "all_bins", "all_samples"))
     shell:
