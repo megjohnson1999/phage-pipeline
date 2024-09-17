@@ -1,7 +1,8 @@
 reads: "reads"
 outdir: "out"
 
-fastq_names: "{sample}_1.fastq.gz"
+fastq_names_1: "{sample}_1.fastq.gz"
+fastq_names_2: "{sample}_2.fastq.gz"
 fastp_min_sequence_length: 120 
 
 human_ref: "/ref/sahlab/data/GRCh38.fna.gz"

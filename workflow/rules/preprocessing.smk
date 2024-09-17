@@ -1,8 +1,8 @@
 # Trim adapters from raw reads
 rule fastp:
     input:
-        r1 = os.path.join(config["reads"],"{sample}_1.fastq.gz"),
-        r2 = os.path.join(config["reads"],"{sample}_2.fastq.gz"),
+        r1 = os.path.join(config["reads"], config["fastq_names_1"]),
+        r2 = os.path.join(config["reads"], config["fastq_names_2"]),
     params:
         l = config["fastp_min_sequence_length"]
     conda: "../envs/fastp_test.yaml"
