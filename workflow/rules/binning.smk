@@ -1,7 +1,7 @@
 rule binning_prep:
     input:
-        hr1 = os.path.join(config["reads"], "host_removed", "{sample}_1_hr.fastq.gz"),
-        hr2 = os.path.join(config["reads"], "host_removed", "{sample}_2_hr.fastq.gz"),
+        hr1 = os.path.join(config["outdir"], "{sample}", "preprocessing", "{sample}_1_hr.fastq.gz"),
+        hr2 = os.path.join(config["outdir"], "{sample}", "preprocessing", "{sample}_2_hr.fastq.gz"),
         contigs = os.path.join(config["outdir"], "{sample}", "assembly", "contigs.fasta")
     threads: 12
     conda: "../envs/minimap_env.yaml"
@@ -72,8 +72,8 @@ rule concoct:
 
 rule maxbin:
     input:
-        hr1 = os.path.join(config["reads"], "host_removed", "{sample}_1_hr.fastq.gz"),
-        hr2 = os.path.join(config["reads"], "host_removed", "{sample}_2_hr.fastq.gz"),
+        hr1 = os.path.join(config["outdir"], "{sample}", "preprocessing", "{sample}_1_hr.fastq.gz"),
+        hr2 = os.path.join(config["outdir"], "{sample}", "preprocessing", "{sample}_2_hr.fastq.gz"),
         contigs_filt = os.path.join(config["outdir"], "{sample}", "assembly", "contigs_filt_1000bp.fasta")
     threads: 24
     conda: "../envs/maxbin_env.yaml"
