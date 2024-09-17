@@ -4,7 +4,7 @@ min_version("8.0")
 import os
 
 configfile: "../config/config.yaml"
-SAMPLES, = glob_wildcards(os.path.join(config["reads"],"{sample}_1.fastq.gz"))
+SAMPLES, = glob_wildcards(os.path.join(config["reads"],config["fastq_names"]))
 
 include: "rules/preprocessing.smk"
 include: "rules/assembly.smk"
@@ -16,5 +16,5 @@ include: "rules/phages.smk"
 
 rule all:
     input:
-        expand(os.path.join(os.path.join(config["outdir"], "{sample}", "phage_analysis", "done")), sample = SAMPLES)
+        expand(os.path.join(config["outdir"], "{sample}", "phage_analysis", "done"), sample = SAMPLES)
     default_target: True

@@ -1,7 +1,9 @@
 reads: "reads"
 outdir: "out"
 
+fastq_names: "{sample}_1.fastq.gz"
 fastp_min_sequence_length: 120 
+
 human_ref: "/ref/sahlab/data/GRCh38.fna.gz"
 genomad_database: "/ref/sahlab/data/viral_analysis_DBs/genomad_DBs/genomad_db"
 bakta_database: "/ref/sahlab/data/bakta_db"
