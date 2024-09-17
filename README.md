@@ -3,7 +3,7 @@
 
 
 # How to run:
-(requires Snakemake version 8+)
+(requires Snakemake version 8+ and [snakemake-executor-plugin-slurm](https://snakemake.github.io/snakemake-plugin-catalog/plugins/executor/slurm.html))
 
 cd workflow
 
