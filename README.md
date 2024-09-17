@@ -5,10 +5,11 @@
 # How to run:
 (requires Snakemake version 8+ and [snakemake-executor-plugin-slurm](https://snakemake.github.io/snakemake-plugin-catalog/plugins/executor/slurm.html))
 
+```
 cd workflow
 
 snakemake --profile ../profile/slurm/ --config [options]
-
+```
 
 # Options:
 
@@ -31,8 +32,9 @@ snakemake --profile ../profile/slurm/ --config [options]
 
 ### Example command:
 
+```
 snakemake --profile ../profile/slurm/ --config reads=/scratch/sahlab/Megan/test_reads outdir=/scratch/sahlab/Megan/pipeline_test_out
-
+```
 
 # Outputs:
 
