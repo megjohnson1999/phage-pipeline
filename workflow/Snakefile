@@ -4,7 +4,7 @@ min_version("8.0")
 import os
 
 configfile: "../config/config.yaml"
-SAMPLES, = glob_wildcards(os.path.join(config["reads"],config["fastq_names"]))
+SAMPLES, = glob_wildcards(os.path.join(config["reads"],config["fastq_names_1"]))
 
 include: "rules/preprocessing.smk"
 include: "rules/assembly.smk"
