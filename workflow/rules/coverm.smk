@@ -58,8 +58,8 @@ rule coverm_cluster:
 
 rule coverm_mapping:
     input:
-        hr1 = os.path.join(config["reads"], "host_removed", "{sample}_1_hr.fastq.gz"),
-        hr2 = os.path.join(config["reads"], "host_removed", "{sample}_2_hr.fastq.gz"),
+        hr1 = os.path.join(config["outdir"], "{sample}", "preprocessing", "{sample}_1_hr.fastq.gz"),
+        hr2 = os.path.join(config["outdir"], "{sample}", "preprocessing", "{sample}_2_hr.fastq.gz"),
         contigs = os.path.join(config["outdir"], "all_bins_clustered")
     threads: 24
     conda: "../envs/coverm_env.yaml"
