@@ -17,6 +17,10 @@ snakemake --profile ../profile/slurm/ --config [options]
 
  - outdir: specify path to directory where all outputs will be created
 
+ - fastq_names_1: default is {sample}_1.fastq.gz
+
+ - fastq_names_2: default is {sample}_2.fastq.gz
+
  - fastp_min_sequence_length: length threshold (in bp) for fastp step (default is 120)
 
  - human_ref: "/ref/sahlab/data/GRCh38.fna.gz"
