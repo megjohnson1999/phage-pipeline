@@ -11,6 +11,10 @@ cd workflow
 snakemake --profile ../profile/slurm/ --config [options]
 ```
 
+## Note:
+
+Paired-end reads belonging to the same pair must have identical names in the r1 and r2 fastq files
+
 # Options:
 
  - reads: specify path to directory where paired-end fastq reads are (with suffixes _1.fastq.gz and _2.fastq.gz)
