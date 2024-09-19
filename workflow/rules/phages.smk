@@ -73,7 +73,7 @@ rule phage_all:
     output:
         fasta = os.path.join(config["outdir"], "{sample}", "phage_analysis", "unique_phispy_prophage.fasta"),
         table = os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage_table.tsv"),
-        table_with_taxonomy = os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage_table_with_taxonomy.tsv")
+        table_with_taxonomy = os.path.join(config["outdir"], "{sample}", "phage_analysis", "final_prophage_table_with_host_taxonomy.tsv")
     script:
         "../scripts/merge_prophages.R"
 
